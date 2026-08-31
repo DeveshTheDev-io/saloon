@@ -1,0 +1,6 @@
+{
+  "name": "Chinki's Beauty Home Service",
+  "description": "Premium female home salon services in Morar, Lashkar, and City Centre.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

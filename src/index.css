@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
