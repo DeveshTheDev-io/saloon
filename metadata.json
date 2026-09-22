@@ -1,6 +1,6 @@
 {
-  "name": "Chinki's Beauty Home Service",
-  "description": "Premium female home salon services in Morar, Lashkar, and City Centre.",
+  "name": "Beauty Home Service - Chinki Hankare",
+  "description": "Exclusive female beauty home salon service in Morar, Lashkar, City Centre, and all over Gwalior. Bridal makeup, party makeup, hairstyles, waxing, facials, and spa.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
