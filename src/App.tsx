@@ -64,7 +64,8 @@ const LOCATIONS = [
 
 const CONTACT_INFO = {
   name: 'Chinki Hankare',
-  businessName: 'Beauty Home Service',
+  businessName: 'Glow Mitra',
+  fullName: 'Glow Mitra - Luxury Home Salon by Chinki Hankare',
   address: 'Hardaul garden DB City, Gwalior, MP',
   phone: '9617162619',
   whatsapp: '9617162619',
@@ -343,13 +344,13 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
           className="flex flex-col cursor-pointer select-none"
         >
           <span className="text-xl md:text-2xl font-extrabold uppercase tracking-tight leading-none text-black">
-            Beauty
+            Glow
           </span>
           <span className="text-xl md:text-2xl font-extrabold uppercase tracking-tight leading-none text-black -mt-1 md:-mt-1.5">
-            Service
+            Mitra
           </span>
           <span className="text-[8px] md:text-[9px] font-semibold leading-none mt-1.5 md:mt-2 text-neutral-800 tracking-wider uppercase">
-            Female Salon • All Over Gwalior
+            Luxury Home Salon • All Over Gwalior
           </span>
         </div>
 
@@ -443,7 +444,7 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
               }`}
             >
               <div className="text-sm font-semibold text-black mb-1">
-                Chinki Hankare • {CONTACT_INFO.businessName}
+                Glow Mitra • Chinki Hankare
               </div>
               <div className="text-xs text-neutral-600 mb-4">
                 Hardaul garden DB City • +91 {CONTACT_INFO.phone}
@@ -657,7 +658,7 @@ export default function App() {
         ? `All over Gwalior${clientAddress ? ` (${clientAddress})` : ''}`
         : `${clientLocation}${clientAddress ? ` (${clientAddress})` : ''}`;
 
-    return `🌸 *BEAUTY HOME SERVICE - APPOINTMENT* 🌸\n(Exclusively for Females • Chinki Hankare)\n\n👤 *Client Name:* ${clientName || 'Not specified'}\n📱 *Contact:* ${clientPhone || 'WhatsApp Client'}\n📍 *Location:* ${locationText}\n\n💅 *Selected Services (${selectedServices.length}):*\n${servicesList}\n\n📅 *Preferred Date:* ${preferredDate || 'Earliest available'}\n⏰ *Preferred Time:* ${preferredSlot}\n${clientNotes ? `📝 *Notes/Requirements:* ${clientNotes}\n` : ''}\nHello Chinki, please confirm my booking appointment. Thank you!`;
+    return `🌸 *GLOW MITRA - LUXURY HOME SALON APPOINTMENT* 🌸\n(Exclusively for Females • Chinki Hankare)\n\n👤 *Client Name:* ${clientName || 'Not specified'}\n📱 *Contact:* ${clientPhone || 'WhatsApp Client'}\n📍 *Location:* ${locationText}\n\n💅 *Selected Services (${selectedServices.length}):*\n${servicesList}\n\n📅 *Preferred Date:* ${preferredDate || 'Earliest available'}\n⏰ *Preferred Time:* ${preferredSlot}\n${clientNotes ? `📝 *Notes/Requirements:* ${clientNotes}\n` : ''}\nHello Chinki, please confirm my home salon booking appointment with Glow Mitra. Thank you!`;
   };
 
   const handleSendWhatsApp = (e?: React.FormEvent) => {
@@ -729,10 +730,10 @@ export default function App() {
           style={s1Reveal.getAnimStyle(3)}
         >
           {/* Top-left text */}
-          <div className="absolute top-4 left-4 md:top-7 md:left-7 text-black text-xs md:text-sm font-semibold leading-4 md:leading-5 max-w-[200px] md:max-w-[300px] z-10">
-            We wish to deliver professional salon services
+          <div className="absolute top-4 left-4 md:top-7 md:left-7 text-black text-xs md:text-sm font-semibold leading-4 md:leading-5 max-w-[220px] md:max-w-[340px] z-10">
+            Professional doorstep salon & beauty care
             <br />
-            that match the current beauty trends
+            in City Centre, Morar, Lashkar & All Gwalior
           </div>
 
           {/* Bottom-left block */}
@@ -740,11 +741,14 @@ export default function App() {
             <span className="block text-black text-xs md:text-sm font-semibold mb-1 md:mb-2">
               Chinki Hankare • Hardaul Garden DB City
             </span>
-            <h1 className="text-black text-[clamp(3rem,11vw,11rem)] font-bold leading-[0.79] tracking-tight">
-              Beauty
+            <h1 className="text-black text-[clamp(2.75rem,9.5vw,9.5rem)] font-bold leading-[0.82] tracking-tight">
+              Glow
               <br />
-              Care
+              Mitra
             </h1>
+            <p className="text-black text-[11px] md:text-xs font-bold tracking-wider uppercase mt-1 md:mt-2">
+              Luxury Home Salon & Beauty Services in Gwalior
+            </p>
           </div>
 
           {/* Bottom-right text */}
@@ -783,10 +787,10 @@ export default function App() {
             style={s2Reveal.getAnimStyle(0)}
           >
             <h2 className="absolute top-4 left-5 md:top-6 md:left-7 text-white md:text-black text-2xl md:text-3xl font-bold z-10">
-              Beauty Gallery
+              Beauty & Bridal Gallery
             </h2>
             <p className="absolute bottom-4 left-5 md:bottom-6 md:left-7 text-white md:text-black text-xs md:text-sm font-semibold z-10">
-              Our bridal & salon work
+              Glow Mitra bridal makeover & hairstyles in Gwalior
             </p>
           </MaskedCard>
 
@@ -827,10 +831,10 @@ export default function App() {
             className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[160px] md:min-h-0"
             style={s2Reveal.getAnimStyle(2)}
           >
-            <h2 className="absolute top-4 left-5 md:top-6 md:left-7 text-white md:text-black text-[clamp(3rem,7vw,6rem)] font-bold leading-[0.9] z-10">
-              Bridal
+            <h2 className="absolute top-4 left-5 md:top-6 md:left-7 text-white md:text-black text-[clamp(2.5rem,6.5vw,5.5rem)] font-bold leading-[0.9] z-10">
+              Bridal &
               <br />
-              makeover
+              Party Makeover
             </h2>
           </MaskedCard>
 
@@ -900,13 +904,13 @@ export default function App() {
               style={s3Reveal.getAnimStyle(0)}
               className="rounded-xl md:rounded-2xl bg-stone-50 p-5 md:p-7 flex flex-col justify-between flex-[1.2] min-h-[180px] md:min-h-0 border border-black/5"
             >
-              <h2 className="text-[clamp(3rem,7vw,6.5rem)] font-bold leading-[0.95] text-black">
+              <h2 className="text-[clamp(2.8rem,7vw,6.5rem)] font-bold leading-[0.95] text-black">
                 Home
                 <br />
-                Service
+                Salon
               </h2>
               <p className="text-xs md:text-sm font-semibold text-black">
-                Only for Females • Morar, Lashkar, City Centre & All Gwalior
+                Doorstep Beauty Care in City Centre, Morar, Lashkar & All Gwalior
               </p>
             </div>
 
@@ -944,14 +948,14 @@ export default function App() {
             >
               <div>
                 <p className="text-xs md:text-sm font-semibold text-black mb-2 md:mb-3">
-                  Consultation
+                  Glow Mitra Consultation
                 </p>
                 <h3 className="text-xl md:text-3xl font-bold text-black leading-6 md:leading-8">
                   Home Salon
                   <br />
                   & Makeover
                   <br />
-                  Services
+                  in Gwalior
                 </h3>
               </div>
               <button
@@ -1062,12 +1066,12 @@ export default function App() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black text-white text-xs font-semibold uppercase tracking-wider mb-3">
                 <span>Exclusively for Women</span>
                 <span>•</span>
-                <span>Morar, Lashkar, City Centre & DB City</span>
+                <span>City Centre, Morar, Lashkar & DB City</span>
               </div>
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-black tracking-tight leading-tight">
                 All Salon & Makeover
                 <br />
-                Services at Home
+                Services in Gwalior
               </h2>
             </div>
             <p className="text-sm md:text-base text-neutral-600 max-w-md font-normal leading-relaxed">
@@ -1208,10 +1212,10 @@ export default function App() {
               Fast WhatsApp Booking (9617162619)
             </span>
             <h2 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight mb-3">
-              Book Home Appointment
+              Book Home Appointment with Glow Mitra
             </h2>
             <p className="text-sm md:text-base text-neutral-600">
-              Customize your booking details below. A pre-written formatted message will be created automatically and opened directly in your WhatsApp to send to <strong>Chinki Hankare</strong>.
+              Customize your booking details below. A pre-written formatted message will be created automatically and opened directly in your WhatsApp to send to <strong>Chinki Hankare (Glow Mitra)</strong>.
             </p>
           </div>
 
@@ -1395,10 +1399,10 @@ export default function App() {
                     CH
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold truncate">Chinki Hankare (Beauty Home Service)</div>
+                    <div className="text-xs font-bold truncate">Chinki Hankare (Glow Mitra)</div>
                     <div className="text-[10px] text-emerald-100 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
-                      Online • Morar, Lashkar, City Centre
+                      Online • Morar, Lashkar, City Centre, Gwalior
                     </div>
                   </div>
                 </div>
@@ -1440,14 +1444,14 @@ export default function App() {
           <div className="space-y-4">
             <div className="flex flex-col">
               <span className="text-2xl font-black uppercase tracking-tight leading-none text-white">
-                Beauty Service
+                Glow Mitra
               </span>
               <span className="text-xs font-semibold text-neutral-400 mt-1 uppercase tracking-widest">
-                By Chinki Hankare
+                By Chinki Hankare • Home Salon
               </span>
             </div>
             <p className="text-xs text-neutral-400 leading-relaxed">
-              Exclusive female in-home salon, bridal makeup, and beauty care service in Gwalior. Exceptional hygienic care brought safely to your doorstep.
+              Exclusive female in-home salon, bridal makeup, hairstyles, facials, and beauty care service in Gwalior. Exceptional hygienic care brought safely to your doorstep.
             </p>
             <div className="inline-block px-3 py-1 rounded-full bg-neutral-900 border border-neutral-700 text-[11px] text-neutral-300 font-medium">
               Only for Female Clients
@@ -1532,7 +1536,7 @@ export default function App() {
 
         {/* Bottom Copyright Bar */}
         <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row items-center justify-between text-neutral-500 text-xs gap-4">
-          <p>© {new Date().getFullYear()} Chinki Hankare • Beauty Home Service. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Glow Mitra • Beauty Home Service by Chinki Hankare. All rights reserved.</p>
           <p className="flex items-center gap-4">
             <span>Only for female clients</span>
             <span>•</span>
