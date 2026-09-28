@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.glowmitra.co.in/sitemap.xml
+Sitemap: https://glowmitra.co.in/sitemap.xml
