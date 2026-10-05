@@ -54,6 +54,113 @@ const ALL_SERVICES_DATA: ServiceItem[] = [
 
 const ALL_SERVICES_NAMES = ALL_SERVICES_DATA.map((s) => s.name);
 
+export interface PackageItem {
+  id: string;
+  name: string;
+  festivalType: 'Ganesh Chaturthi' | 'Karwa Chauth';
+  offerBadge: string;
+  badgeTone: 'gold' | 'rose';
+  price: number;
+  originalPrice: number;
+  savingsText: string;
+  items: string[];
+  description: string;
+  popular?: boolean;
+}
+
+export const LATEST_PACKAGES_DATA: PackageItem[] = [
+  {
+    id: 'pkg-hydra-rica-1999',
+    name: 'Hydra Boost Facial & Rica Wax Special',
+    festivalType: 'Ganesh Chaturthi',
+    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
+    badgeTone: 'gold',
+    price: 1999,
+    originalPrice: 2499,
+    savingsText: 'Save ₹500 (10% Off Special)',
+    items: [
+      'Hydra boost facial',
+      'Rica wax -- full arms, full legs, underarms',
+      'Root to touch up',
+      'Eyebrows & upper lips',
+    ],
+    description: 'Deep hydration facial paired with premium gentle Rica waxing, root hair touch-up, and threading.',
+    popular: true,
+  },
+  {
+    id: 'pkg-korean-rica-1999',
+    name: 'Korean Glass Facial & Hair Colour Package',
+    festivalType: 'Ganesh Chaturthi',
+    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
+    badgeTone: 'gold',
+    price: 1999,
+    originalPrice: 2499,
+    savingsText: 'Save ₹500 (10% Off Special)',
+    items: [
+      'Korean glass facial',
+      'Rica wax -- full arms, full legs, underarms',
+      'Hair colour application',
+      'Eyebrows, upper lips & forehead',
+    ],
+    description: 'Trending Korean glass skin therapy with gentle Rica waxing, full hair colour and clean brow grooming.',
+    popular: true,
+  },
+  {
+    id: 'pkg-kc-raga-999',
+    name: 'Karwa Chauth Raaga Radiance Combo',
+    festivalType: 'Karwa Chauth',
+    offerBadge: 'Karwa Chauth Offer',
+    badgeTone: 'rose',
+    price: 999,
+    originalPrice: 1599,
+    savingsText: 'Just RS 999 • Festive Combo',
+    items: [
+      'Raaga facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'De-tan pack included (FREE)',
+    ],
+    description: 'Festive Raaga glow facial combined with honey body waxing, complimentary de-tan treatment & threading.',
+    popular: true,
+  },
+  {
+    id: 'pkg-kc-korean-999',
+    name: 'Karwa Chauth Korean Glass Facial Combo',
+    festivalType: 'Karwa Chauth',
+    offerBadge: 'Karwa Chauth Offer',
+    badgeTone: 'rose',
+    price: 999,
+    originalPrice: 1699,
+    savingsText: 'Just RS 999 • Festive Combo',
+    items: [
+      'Korean glass facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'De-tan pack included (FREE)',
+    ],
+    description: 'Instant luminous crystal glow facial with full honey waxing, herbal de-tan pack & shaping.',
+    popular: true,
+  },
+  {
+    id: 'pkg-kc-hydra-999',
+    name: 'Karwa Chauth Hydra Facial Combo',
+    festivalType: 'Karwa Chauth',
+    offerBadge: 'Karwa Chauth Offer',
+    badgeTone: 'rose',
+    price: 999,
+    originalPrice: 1699,
+    savingsText: 'Just RS 999 • Festive Combo',
+    items: [
+      'Hydra facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'De-tan pack included (FREE)',
+    ],
+    description: 'Deep moisture-infusion Hydra facial plus complete smooth honey waxing and de-tan glow therapy.',
+    popular: true,
+  },
+];
+
 const LOCATIONS = [
   'City Centre',
   'Morar',
@@ -101,59 +208,84 @@ function useMaskPositions(
   cardRefs: React.RefObject<(HTMLElement | null)[]>
 ) {
   const [positions, setPositions] = useState<CardPosition[]>([]);
+  const prevPositionsRef = useRef<CardPosition[]>([]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    let animFrame: number;
 
     const compute = () => {
       const cRect = container.getBoundingClientRect();
       const currentCards = cardRefs.current || [];
       const newPos: CardPosition[] = currentCards.map((card) => {
         if (!card) {
-          return { x: 0, y: 0, sw: cRect.width, sh: cRect.height };
+          return { x: 0, y: 0, sw: Math.round(cRect.width), sh: Math.round(cRect.height) };
         }
         const cardRect = card.getBoundingClientRect();
         return {
-          x: cardRect.left - cRect.left,
-          y: cardRect.top - cRect.top,
-          sw: cRect.width,
-          sh: cRect.height,
+          x: Math.round(cardRect.left - cRect.left),
+          y: Math.round(cardRect.top - cRect.top),
+          sw: Math.round(cRect.width),
+          sh: Math.round(cRect.height),
         };
       });
-      setPositions(newPos);
+
+      const isSame =
+        prevPositionsRef.current.length === newPos.length &&
+        prevPositionsRef.current.every(
+          (p, idx) =>
+            Math.abs(p.x - newPos[idx].x) < 2 &&
+            Math.abs(p.y - newPos[idx].y) < 2 &&
+            Math.abs(p.sw - newPos[idx].sw) < 2 &&
+            Math.abs(p.sh - newPos[idx].sh) < 2
+        );
+
+      if (!isSame) {
+        prevPositionsRef.current = newPos;
+        setPositions(newPos);
+      }
     };
 
-    compute();
-    const observer = new ResizeObserver(() => compute());
+    const scheduledCompute = () => {
+      cancelAnimationFrame(animFrame);
+      animFrame = requestAnimationFrame(compute);
+    };
+
+    scheduledCompute();
+    const observer = new ResizeObserver(() => scheduledCompute());
     observer.observe(container);
-    window.addEventListener('resize', compute);
+    window.addEventListener('resize', scheduledCompute);
 
     return () => {
+      cancelAnimationFrame(animFrame);
       observer.disconnect();
-      window.removeEventListener('resize', compute);
+      window.removeEventListener('resize', scheduledCompute);
     };
   }, [containerRef, cardRefs]);
 
   return positions;
 }
 
-function useImageWidth(src: string, sectionHeight: number) {
-  const [renderWidth, setRenderWidth] = useState<number>(0);
+function useImageNaturalSize(src: string, defaultW = 1280, defaultH = 853) {
+  const [size, setSize] = useState<{ width: number; height: number }>({
+    width: defaultW,
+    height: defaultH,
+  });
 
   useEffect(() => {
-    if (!sectionHeight) return;
+    if (!src) return;
     const img = new Image();
     img.src = src;
     img.onload = () => {
-      if (img.naturalHeight > 0) {
-        const calculatedWidth = img.naturalWidth * (sectionHeight / img.naturalHeight);
-        setRenderWidth(calculatedWidth);
+      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+        setSize({ width: img.naturalWidth, height: img.naturalHeight });
       }
     };
-  }, [src, sectionHeight]);
+  }, [src, defaultW, defaultH]);
 
-  return renderWidth;
+  return size;
 }
 
 function useStaggeredReveal(count: number, threshold = 0.15) {
@@ -195,8 +327,10 @@ interface MaskedCardProps {
   key?: React.Key;
   bgImage: string;
   position?: CardPosition;
-  imageWidth: number;
-  focalX: number;
+  imageNaturalWidth?: number;
+  imageNaturalHeight?: number;
+  focalX?: number;
+  focalY?: number;
   className?: string;
   children?: React.ReactNode;
   cardRef?: (el: HTMLElement | null) => void;
@@ -206,8 +340,10 @@ interface MaskedCardProps {
 function MaskedCard({
   bgImage,
   position,
-  imageWidth,
-  focalX,
+  imageNaturalWidth = 1280,
+  imageNaturalHeight = 853,
+  focalX = 0.5,
+  focalY = 0.5,
   className = '',
   children,
   cardRef,
@@ -215,14 +351,26 @@ function MaskedCard({
 }: MaskedCardProps) {
   let maskStyle: React.CSSProperties = {};
 
-  if (position && position.sh > 0) {
-    const overflow = imageWidth > position.sw ? imageWidth - position.sw : 0;
-    const focalOffset = overflow * focalX;
+  if (position && position.sh > 0 && position.sw > 0) {
+    const natW = imageNaturalWidth > 0 ? imageNaturalWidth : 1280;
+    const natH = imageNaturalHeight > 0 ? imageNaturalHeight : 853;
+
+    // Full cover scale: guarantees the image covers 100% of container width (sw) and height (sh)
+    // on all full-screen desktop screens (1080p, 1440p, 4K, ultrawide) and mobile devices.
+    const scale = Math.max(position.sw / natW, position.sh / natH);
+    const renderedWidth = Math.ceil(natW * scale);
+    const renderedHeight = Math.ceil(natH * scale);
+
+    const overflowX = renderedWidth > position.sw ? renderedWidth - position.sw : 0;
+    const overflowY = renderedHeight > position.sh ? renderedHeight - position.sh : 0;
+
+    const offsetX = Math.round(overflowX * focalX);
+    const offsetY = Math.round(overflowY * focalY);
 
     maskStyle = {
       backgroundImage: `url(${bgImage})`,
-      backgroundSize: `auto ${position.sh}px`,
-      backgroundPosition: `-${position.x + focalOffset}px -${position.y}px`,
+      backgroundSize: `${renderedWidth}px ${renderedHeight}px`,
+      backgroundPosition: `-${position.x + offsetX}px -${position.y + offsetY}px`,
       backgroundRepeat: 'no-repeat',
     };
   }
@@ -248,45 +396,43 @@ function MaskedCard({
 function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
   const [exiting, setExiting] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    const duration = 2000;
-    const steps = 100;
-    const intervalTime = duration / steps; // 20ms
+    let start: number | null = null;
+    const duration = 750;
+    let rafId: number;
 
-    const timer = setInterval(() => {
-      setCount((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, intervalTime);
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const val = Math.floor(progress * 100);
+      setCount(val);
 
-    return () => clearInterval(timer);
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
+      } else {
+        setExiting(true);
+        setTimeout(() => {
+          onCompleteRef.current();
+        }, 200);
+      }
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
-  useEffect(() => {
-    if (count === 100) {
-      const exitTimer = setTimeout(() => {
-        setExiting(true);
-      }, 200);
-
-      const completeTimer = setTimeout(() => {
-        onComplete();
-      }, 900);
-
-      return () => {
-        clearTimeout(exitTimer);
-        clearTimeout(completeTimer);
-      };
-    }
-  }, [count, onComplete]);
+  const handleSkip = () => {
+    setExiting(true);
+    onCompleteRef.current();
+  };
 
   return (
     <div
-      className={`fixed inset-0 z-[100] bg-white flex items-end justify-start transition-opacity duration-700 ${
+      onClick={handleSkip}
+      className={`fixed inset-0 z-[100] bg-white flex items-end justify-start transition-opacity duration-300 cursor-pointer ${
         exiting ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -329,6 +475,7 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
 
   const navLinks = [
     { label: 'Home', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { label: 'Latest Packages (Festive)', action: () => scrollTo('latest-packages') },
     { label: 'All 19 Services', action: () => scrollTo('all-services') },
     { label: 'Bridal & Party', action: () => scrollTo('gallery') },
     { label: 'Home Visits', action: () => scrollTo('home-services') },
@@ -355,10 +502,20 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
         </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-4 lg:gap-6">
+        <div className="hidden md:flex items-center gap-3 lg:gap-5">
+          <button
+            onClick={() => scrollTo('latest-packages')}
+            className="px-4 py-2 rounded-full border border-amber-500/50 bg-amber-50 text-amber-950 text-xs lg:text-sm font-bold hover:bg-amber-100 transition-colors duration-200 cursor-pointer flex items-center gap-1.5 shadow-xs"
+          >
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+            <span>Latest Packages</span>
+            <span className="text-[10px] uppercase tracking-wide bg-rose-600 text-white font-extrabold px-1.5 py-0.5 rounded-full">
+              Offers
+            </span>
+          </button>
           <button
             onClick={() => scrollTo('all-services')}
-            className="px-5 py-2.5 bg-white rounded-full border border-black text-xs lg:text-sm font-semibold hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer"
+            className="px-4 py-2 bg-white rounded-full border border-black/20 text-xs lg:text-sm font-semibold hover:bg-black hover:text-white transition-colors duration-200 cursor-pointer"
           >
             All Services Menu
           </button>
@@ -371,7 +528,7 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
           </a>
           <button
             onClick={() => scrollTo('whatsapp-booking')}
-            className="px-6 py-2.5 bg-black text-white rounded-full text-xs lg:text-sm font-semibold hover:bg-neutral-800 transition-colors duration-200 shadow-sm cursor-pointer flex items-center gap-2"
+            className="px-5 py-2.5 bg-black text-white rounded-full text-xs lg:text-sm font-semibold hover:bg-neutral-800 transition-colors duration-200 shadow-sm cursor-pointer flex items-center gap-2"
           >
             <span>Book on WhatsApp</span>
           </button>
@@ -418,28 +575,30 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className="flex flex-col justify-center h-full px-8 gap-2">
-            {navLinks.map((link, i) => (
-              <button
-                key={link.label}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  link.action();
-                }}
-                style={{
-                  transitionDelay: isMenuOpen ? `${100 + i * 50}ms` : '0ms',
-                }}
-                className={`text-left text-2xl font-bold text-black hover:text-neutral-500 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] py-2 ${
-                  isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+          <div className="flex flex-col justify-between min-h-full py-16 px-6 sm:px-8 gap-4 overflow-y-auto">
+            <div className="flex flex-col gap-1">
+              {navLinks.map((link, i) => (
+                <button
+                  key={link.label}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    link.action();
+                  }}
+                  style={{
+                    transitionDelay: isMenuOpen ? `${100 + i * 40}ms` : '0ms',
+                  }}
+                  className={`text-left text-xl sm:text-2xl font-bold text-black hover:text-neutral-500 transition-all duration-300 py-2 cursor-pointer ${
+                    isMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
 
             <div
-              style={{ transitionDelay: isMenuOpen ? '400ms' : '0ms' }}
-              className={`mt-6 pt-6 border-t border-neutral-200 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+              style={{ transitionDelay: isMenuOpen ? '350ms' : '0ms' }}
+              className={`pt-4 border-t border-neutral-200 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
                 isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
@@ -454,7 +613,7 @@ function Navbar({ onOpenBooking, onOpenServices }: NavbarProps) {
                   setIsMenuOpen(false);
                   scrollTo('whatsapp-booking');
                 }}
-                className="w-full px-6 py-3.5 bg-black rounded-full text-white text-sm font-semibold hover:bg-neutral-800 transition-colors duration-200 cursor-pointer"
+                className="w-full px-6 py-3.5 bg-black rounded-full text-white text-sm font-semibold hover:bg-neutral-800 transition-colors duration-200 cursor-pointer shadow-md"
               >
                 Book on WhatsApp
               </button>
@@ -474,11 +633,15 @@ function ServicesCatalogModal({
   isOpen,
   onClose,
   onSelectService,
+  onSelectPackage,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onSelectService: (serviceName: string) => void;
+  onSelectPackage: (packageId: string) => void;
 }) {
+  const [modalTab, setModalTab] = useState<'packages' | 'services'>('packages');
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -507,10 +670,10 @@ function ServicesCatalogModal({
         <div className="flex items-center justify-between px-5 md:px-7 py-4 border-b border-black/10 bg-stone-50 shrink-0">
           <div>
             <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500">
-              Complete Menu • 19 Services
+              Glow Mitra Home Salon Menu
             </span>
             <h3 className="text-xl md:text-2xl font-bold text-black leading-tight">
-              All Beauty Home Services
+              Services & Festive Packages
             </h3>
           </div>
           {/* Very visible and easy to click close button */}
@@ -524,44 +687,110 @@ function ServicesCatalogModal({
           </button>
         </div>
 
-        {/* Scrollable list of services */}
-        <div className="p-5 md:p-7 overflow-y-auto space-y-2.5">
-          <p className="text-xs text-neutral-600 mb-4">
-            Click any service to select it for your in-home appointment by Chinki Hankare across all over Gwalior.
-          </p>
+        {/* Tab switch between Festive Packages and All Services */}
+        <div className="flex items-center gap-2 px-5 md:px-7 py-3 border-b border-black/10 bg-stone-100/70 shrink-0">
+          <button
+            onClick={() => setModalTab('packages')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              modalTab === 'packages'
+                ? 'bg-black text-white shadow-sm'
+                : 'bg-white text-black border border-black/10 hover:bg-stone-200'
+            }`}
+          >
+            <span>🎁 Latest Packages (5)</span>
+            <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded-full font-extrabold">Offers</span>
+          </button>
+          <button
+            onClick={() => setModalTab('services')}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              modalTab === 'services'
+                ? 'bg-black text-white shadow-sm'
+                : 'bg-white text-black border border-black/10 hover:bg-stone-200'
+            }`}
+          >
+            All 19 Services
+          </button>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {ALL_SERVICES_DATA.map((s, idx) => (
-              <div
-                key={s.id}
-                onClick={() => {
-                  onSelectService(s.name);
-                  onClose();
-                }}
-                className="p-3.5 rounded-xl border border-black/10 bg-stone-50 hover:bg-black hover:text-white transition-all cursor-pointer flex items-center justify-between group"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-semibold text-neutral-500 group-hover:text-neutral-300">
-                      {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
-                    </span>
-                    {s.popular && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 group-hover:bg-neutral-700 group-hover:text-white font-semibold">
-                        Popular
+        {/* Scrollable list */}
+        <div className="p-5 md:p-7 overflow-y-auto space-y-3">
+          {modalTab === 'packages' ? (
+            <div className="space-y-3">
+              <p className="text-xs text-neutral-600 mb-2">
+                Special festive packages for Ganesh Chaturthi (10% Off) & Karwa Chauth (₹999). Click any package to select it and start booking!
+              </p>
+              {LATEST_PACKAGES_DATA.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  onClick={() => {
+                    onSelectPackage(pkg.id);
+                    onClose();
+                  }}
+                  className="p-4 rounded-xl border border-black/10 bg-stone-50 hover:bg-black hover:text-white transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 group-hover:bg-neutral-800 group-hover:text-rose-300">
+                        {pkg.offerBadge}
                       </span>
-                    )}
+                      <span className="text-[11px] text-neutral-500 group-hover:text-neutral-300 line-through">
+                        ₹{pkg.originalPrice}
+                      </span>
+                      <span className="text-xs font-black text-emerald-700 group-hover:text-emerald-300">
+                        ₹{pkg.price}
+                      </span>
+                    </div>
+                    <div className="text-sm font-bold capitalize mt-0.5">{pkg.name}</div>
+                    <div className="text-[11px] text-neutral-600 group-hover:text-neutral-300 mt-1">
+                      {pkg.items.join(' • ')}
+                    </div>
                   </div>
-                  <div className="text-sm font-bold capitalize mt-0.5">{s.name}</div>
-                  <div className="text-[11px] text-neutral-500 group-hover:text-neutral-300 line-clamp-1">
-                    {s.description}
-                  </div>
+                  <button className="px-3.5 py-1.5 rounded-full bg-black text-white group-hover:bg-white group-hover:text-black text-xs font-bold shrink-0 self-start sm:self-center transition-colors">
+                    Book Package →
+                  </button>
                 </div>
-                <span className="text-xs font-bold underline group-hover:text-white shrink-0 ml-2">
-                  Select
-                </span>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <p className="text-xs text-neutral-600 mb-4">
+                Click any service to select it for your in-home appointment by Chinki Hankare across all over Gwalior.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {ALL_SERVICES_DATA.map((s, idx) => (
+                  <div
+                    key={s.id}
+                    onClick={() => {
+                      onSelectService(s.name);
+                      onClose();
+                    }}
+                    className="p-3.5 rounded-xl border border-black/10 bg-stone-50 hover:bg-black hover:text-white transition-all cursor-pointer flex items-center justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-semibold text-neutral-500 group-hover:text-neutral-300">
+                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                        </span>
+                        {s.popular && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 group-hover:bg-neutral-700 group-hover:text-white font-semibold">
+                            Popular
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm font-bold capitalize mt-0.5">{s.name}</div>
+                      <div className="text-[11px] text-neutral-500 group-hover:text-neutral-300 line-clamp-1">
+                        {s.description}
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold underline group-hover:text-white shrink-0 ml-2">
+                      Select
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Sticky Footer with secondary close button */}
@@ -587,11 +816,12 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
 
-  // WhatsApp interactive booking state
-  const [selectedServices, setSelectedServices] = useState<string[]>([
-    'Bridal makeup',
-    'Hairstyles',
-  ]);
+  // Selected latest packages state (empty by default - customer adds by themselves)
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [activePackageFilter, setActivePackageFilter] = useState<'All' | 'Ganesh Chaturthi' | 'Karwa Chauth'>('All');
+
+  // WhatsApp interactive booking state (empty by default - customer adds by themselves)
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientLocation, setClientLocation] = useState('City Centre');
@@ -609,16 +839,14 @@ export default function App() {
   const section1Ref = useRef<HTMLElement | null>(null);
   const s1CardsRef = useRef<(HTMLElement | null)[]>([]);
   const s1Positions = useMaskPositions(section1Ref, s1CardsRef);
-  const s1Height = section1Ref.current?.clientHeight || 800;
-  const s1ImageWidth = useImageWidth(HERO_IMAGE, s1Height);
+  const s1NaturalSize = useImageNaturalSize(HERO_IMAGE, 1280, 853);
   const s1Reveal = useStaggeredReveal(4, 0.15);
 
   // Section 2 Masking & Stagger
   const section2Ref = useRef<HTMLElement | null>(null);
   const s2CardsRef = useRef<(HTMLElement | null)[]>([]);
   const s2Positions = useMaskPositions(section2Ref, s2CardsRef);
-  const s2Height = section2Ref.current?.clientHeight || 800;
-  const s2ImageWidth = useImageWidth(SECTION2_IMAGE, s2Height);
+  const s2NaturalSize = useImageNaturalSize(SECTION2_IMAGE, 1280, 853);
   const s2Reveal = useStaggeredReveal(4, 0.15);
 
   // Section 3 Stagger
@@ -626,6 +854,23 @@ export default function App() {
 
   const focal1 = isMobile ? 0.7 : 0.8;
   const focal2 = isMobile ? 0.65 : 0.8;
+
+  // Toggle package
+  const togglePackage = (pkgId: string) => {
+    setSelectedPackages((prev) =>
+      prev.includes(pkgId) ? prev.filter((id) => id !== pkgId) : [...prev, pkgId]
+    );
+  };
+
+  const handleSelectPackageAndBook = (pkgId: string) => {
+    if (!selectedPackages.includes(pkgId)) {
+      setSelectedPackages((prev) => [...prev, pkgId]);
+    }
+    const bookingEl = document.getElementById('whatsapp-booking');
+    if (bookingEl) {
+      bookingEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Toggle service in the booking selector
   const toggleService = (serviceName: string) => {
@@ -646,27 +891,77 @@ export default function App() {
     }
   };
 
-  // Generate Prewritten WhatsApp Message
+  // Generate Prewritten WhatsApp Message with Festive Packages & Services
   const generateWhatsAppMessage = () => {
+    const chosenPkgs = LATEST_PACKAGES_DATA.filter((p) =>
+      selectedPackages.includes(p.id)
+    );
+
+    let packagesText = '';
+    if (chosenPkgs.length > 0) {
+      packagesText = chosenPkgs
+        .map(
+          (p) =>
+            `🎁 *${p.name}* (Just RS -- ${p.price.toLocaleString('en-IN')})\n   Offer: ${p.offerBadge}\n   Included Items:\n${p.items
+              .map((it) => `     ✓ ${it}`)
+              .join('\n')}`
+        )
+        .join('\n\n');
+    }
+
     const servicesList =
       selectedServices.length > 0
         ? selectedServices.map((s) => `  • ${s}`).join('\n')
-        : '  • Custom Consultation';
+        : '';
 
     const locationText =
       clientLocation === 'All over Gwalior'
         ? `All over Gwalior${clientAddress ? ` (${clientAddress})` : ''}`
         : `${clientLocation}${clientAddress ? ` (${clientAddress})` : ''}`;
 
-    return `🌸 *GLOW MITRA - LUXURY HOME SALON APPOINTMENT* 🌸\n(Exclusively for Females • Chinki Hankare)\n\n👤 *Client Name:* ${clientName || 'Not specified'}\n📱 *Contact:* ${clientPhone || 'WhatsApp Client'}\n📍 *Location:* ${locationText}\n\n💅 *Selected Services (${selectedServices.length}):*\n${servicesList}\n\n📅 *Preferred Date:* ${preferredDate || 'Earliest available'}\n⏰ *Preferred Time:* ${preferredSlot}\n${clientNotes ? `📝 *Notes/Requirements:* ${clientNotes}\n` : ''}\nHello Chinki, please confirm my home salon booking appointment with Glow Mitra. Thank you!`;
+    const totalPackagePrice = chosenPkgs.reduce((sum, p) => sum + p.price, 0);
+
+    return `🌸 *GLOW MITRA - LUXURY HOME SALON APPOINTMENT* 🌸\n(Exclusively for Females • Chinki Hankare)\n\n👤 *Client Name:* ${clientName || 'Not specified'}\n📱 *Contact:* ${clientPhone || 'WhatsApp Client'}\n📍 *Location:* ${locationText}\n\n${
+      packagesText
+        ? `🎉 *SELECTED FESTIVE PACKAGE(S) (${chosenPkgs.length}):*\n${packagesText}\n\n`
+        : ''
+    }${
+      servicesList
+        ? `💅 *SELECTED A-LA-CARTE SERVICES (${selectedServices.length}):*\n${servicesList}\n\n`
+        : !packagesText
+        ? '💅 *Selected Services:* (None selected yet - select services/packages above to add)\n\n'
+        : ''
+    }${
+      totalPackagePrice > 0
+        ? `💰 *Package Subtotal:* Just RS -- ${totalPackagePrice.toLocaleString('en-IN')}\n\n`
+        : ''
+    }📅 *Preferred Date:* ${preferredDate || 'Earliest available'}\n⏰ *Preferred Time:* ${preferredSlot}\n${
+      clientNotes ? `📝 *Notes/Requirements:* ${clientNotes}\n` : ''
+    }\nHello Chinki, please confirm my home salon booking appointment with Glow Mitra. Thank you!`;
   };
 
   const handleSendWhatsApp = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const msg = generateWhatsAppMessage();
     const url = `https://wa.me/91${CONTACT_INFO.whatsapp}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch {
+      window.location.href = url;
+    }
   };
+
+  // Filtered packages
+  const filteredPackages =
+    activePackageFilter === 'All'
+      ? LATEST_PACKAGES_DATA
+      : LATEST_PACKAGES_DATA.filter((p) => p.festivalType === activePackageFilter);
 
   // Filtered services for the landing page grid
   const filteredServices =
@@ -695,7 +990,7 @@ export default function App() {
           section1Ref.current = el;
           s1Reveal.containerRef.current = el;
         }}
-        className="h-screen w-full overflow-hidden flex flex-col pt-20 md:pt-24 px-3 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
+        className="min-h-[640px] sm:min-h-[700px] md:h-screen w-full overflow-hidden flex flex-col pt-18 sm:pt-20 md:pt-24 px-2.5 sm:px-4 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
       >
         {/* 3 Feature Bars */}
         {featureBars.map((bar, i) => (
@@ -706,12 +1001,14 @@ export default function App() {
             }}
             bgImage={HERO_IMAGE}
             position={s1Positions[i]}
-            imageWidth={s1ImageWidth}
+            imageNaturalWidth={s1NaturalSize.width}
+            imageNaturalHeight={s1NaturalSize.height}
             focalX={focal1}
-            className="w-full h-14 md:h-20 shrink-0 rounded-xl md:rounded-2xl overflow-hidden relative shadow-sm"
+            focalY={0.35}
+            className="w-full h-11 sm:h-14 md:h-20 shrink-0 rounded-xl md:rounded-2xl overflow-hidden relative shadow-xs"
             style={s1Reveal.getAnimStyle(i)}
           >
-            <span className="flex items-center justify-center h-full text-black text-lg md:text-3xl font-bold text-center relative z-10 px-4">
+            <span className="flex items-center justify-center h-full text-black text-sm sm:text-base md:text-3xl font-extrabold text-center relative z-10 px-3">
               {bar}
             </span>
           </MaskedCard>
@@ -724,42 +1021,47 @@ export default function App() {
           }}
           bgImage={HERO_IMAGE}
           position={s1Positions[3]}
-          imageWidth={s1ImageWidth}
+          imageNaturalWidth={s1NaturalSize.width}
+          imageNaturalHeight={s1NaturalSize.height}
           focalX={focal1}
-          className="w-full flex-1 min-h-0 rounded-xl md:rounded-2xl overflow-hidden relative shadow-sm"
+          focalY={0.35}
+          className="w-full flex-1 min-h-[360px] sm:min-h-[400px] md:min-h-0 rounded-xl md:rounded-2xl overflow-hidden relative shadow-sm"
           style={s1Reveal.getAnimStyle(3)}
         >
           {/* Top-left text */}
-          <div className="absolute top-4 left-4 md:top-7 md:left-7 text-black text-xs md:text-sm font-semibold leading-4 md:leading-5 max-w-[220px] md:max-w-[340px] z-10">
-            Professional doorstep salon & beauty care
+          <div className="absolute top-3.5 left-3.5 sm:top-5 sm:left-5 md:top-7 md:left-7 text-black text-[11px] sm:text-xs md:text-sm font-bold leading-tight sm:leading-4 md:leading-5 max-w-[220px] sm:max-w-[280px] md:max-w-[340px] z-10 bg-white/80 md:bg-white/70 backdrop-blur-xs px-2.5 py-1.5 rounded-lg border border-black/5">
+            Professional doorstep salon &amp; beauty care
             <br />
-            in City Centre, Morar, Lashkar & All Gwalior
+            in City Centre, Morar, Lashkar &amp; All Gwalior
           </div>
 
           {/* Bottom-left block */}
-          <div className="absolute bottom-5 left-3 md:bottom-8 md:left-4 z-10">
-            <span className="block text-black text-xs md:text-sm font-semibold mb-1 md:mb-2">
+          <div className="absolute bottom-4 left-3.5 sm:bottom-6 sm:left-5 md:bottom-8 md:left-4 z-10">
+            <span className="text-black text-[11px] sm:text-xs md:text-sm font-bold mb-1 md:mb-2 bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-md inline-block shadow-xs border border-black/5">
               Chinki Hankare • Hardaul Garden DB City
             </span>
-            <h1 className="text-black text-[clamp(2.75rem,9.5vw,9.5rem)] font-bold leading-[0.82] tracking-tight">
+            <h1 className="text-black text-[clamp(2.5rem,8vw,9.5rem)] font-black leading-[0.84] tracking-tight drop-shadow-xs">
               Glow
               <br />
               Mitra
             </h1>
-            <p className="text-black text-[11px] md:text-xs font-bold tracking-wider uppercase mt-1 md:mt-2">
-              Luxury Home Salon & Beauty Services in Gwalior
+            <p className="text-black text-[10px] sm:text-[11px] md:text-xs font-extrabold tracking-wider uppercase mt-1 md:mt-2 bg-white/70 backdrop-blur-xs inline-block px-2 py-0.5 rounded">
+              Luxury Home Salon &amp; Beauty Services in Gwalior
             </p>
           </div>
 
-          {/* Bottom-right text */}
+          {/* Bottom-right CTA button */}
           <div
             onClick={() => {
               const el = document.getElementById('whatsapp-booking');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="absolute bottom-6 right-4 md:bottom-10 md:right-8 text-white text-xs md:text-sm font-semibold z-10 cursor-pointer underline hover:opacity-80 transition-opacity"
+            className="absolute bottom-4 right-3.5 sm:bottom-6 sm:right-5 md:bottom-8 md:right-8 z-10 cursor-pointer"
           >
-            All Over Gwalior • Book on WhatsApp
+            <div className="px-4 py-2.5 sm:px-5 sm:py-3 bg-black hover:bg-neutral-800 text-white text-xs sm:text-sm font-bold rounded-full shadow-lg transition-all flex items-center gap-2 border border-white/20 hover:scale-105 active:scale-95">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>All Over Gwalior • Book on WhatsApp →</span>
+            </div>
           </div>
         </MaskedCard>
       </section>
@@ -771,7 +1073,7 @@ export default function App() {
           section2Ref.current = el;
           s2Reveal.containerRef.current = el;
         }}
-        className="min-h-screen md:h-screen w-full overflow-hidden flex flex-col pt-1.5 md:pt-2 px-3 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
+        className="min-h-screen md:h-screen w-full overflow-hidden flex flex-col pt-1.5 md:pt-2 px-2.5 sm:px-4 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
       >
         <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 grid-rows-[auto_auto_auto_auto] md:grid-rows-[1fr_1fr_0.8fr] gap-1.5 md:gap-2">
           {/* Card 0 - Top Left ("Beauty Gallery") */}
@@ -781,16 +1083,18 @@ export default function App() {
             }}
             bgImage={SECTION2_IMAGE}
             position={s2Positions[0]}
-            imageWidth={s2ImageWidth}
+            imageNaturalWidth={s2NaturalSize.width}
+            imageNaturalHeight={s2NaturalSize.height}
             focalX={focal2}
-            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[160px] md:min-h-0"
+            focalY={0.4}
+            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[140px] sm:min-h-[160px] md:min-h-0"
             style={s2Reveal.getAnimStyle(0)}
           >
-            <h2 className="absolute top-4 left-5 md:top-6 md:left-7 text-white md:text-black text-2xl md:text-3xl font-bold z-10">
-              Beauty & Bridal Gallery
+            <h2 className="absolute top-4 left-4 sm:left-5 md:top-6 md:left-7 text-black text-xl sm:text-2xl md:text-3xl font-black z-10 drop-shadow-xs">
+              Beauty &amp; Bridal Gallery
             </h2>
-            <p className="absolute bottom-4 left-5 md:bottom-6 md:left-7 text-white md:text-black text-xs md:text-sm font-semibold z-10">
-              Glow Mitra bridal makeover & hairstyles in Gwalior
+            <p className="absolute bottom-4 left-4 sm:left-5 md:bottom-6 md:left-7 text-black text-xs md:text-sm font-bold z-10 bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-black/5 shadow-xs">
+              Glow Mitra bridal makeover &amp; hairstyles in Gwalior
             </p>
           </MaskedCard>
 
@@ -801,90 +1105,131 @@ export default function App() {
             }}
             bgImage={SECTION2_IMAGE}
             position={s2Positions[1]}
-            imageWidth={s2ImageWidth}
+            imageNaturalWidth={s2NaturalSize.width}
+            imageNaturalHeight={s2NaturalSize.height}
             focalX={focal2}
-            className="md:row-span-2 rounded-xl md:rounded-2xl overflow-hidden relative min-h-[200px] md:min-h-0"
+            focalY={0.4}
+            className="md:row-span-2 rounded-xl md:rounded-2xl overflow-hidden relative min-h-[180px] sm:min-h-[200px] md:min-h-0"
             style={s2Reveal.getAnimStyle(1)}
           >
-            <div className="absolute bottom-16 left-5 md:bottom-20 md:left-7 text-white text-xs md:text-sm font-semibold leading-4 md:leading-5 z-10">
+            <div className="absolute bottom-16 left-4 sm:left-5 md:bottom-20 md:left-7 text-white text-xs md:text-sm font-semibold leading-4 md:leading-5 z-10 bg-black/60 backdrop-blur-xs px-3.5 py-2 rounded-xl border border-white/10 shadow-sm">
               If you want a gorgeous makeover,
               <br />
               call us to ask about home packages.
             </div>
             <a
               href={`tel:${CONTACT_INFO.phone}`}
-              className="absolute bottom-4 right-4 md:bottom-6 md:right-6 px-5 py-3 md:px-8 md:py-5 bg-white rounded-full text-black text-base md:text-xl font-bold z-10 hover:scale-105 transition-transform inline-block cursor-pointer shadow-lg"
+              className="absolute bottom-4 right-4 md:bottom-6 md:right-6 px-4 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-5 bg-white rounded-full text-black text-sm sm:text-base md:text-xl font-bold z-10 hover:scale-105 transition-transform inline-block cursor-pointer shadow-lg border border-black/10"
             >
               Call Us
             </a>
           </MaskedCard>
 
-          {/* Card 2 - Bottom Left ("Bridal makeover") */}
+          {/* Card 2 - Bottom Left ("Bridal & Party Makeover") */}
           <MaskedCard
             cardRef={(el) => {
               s2CardsRef.current[2] = el;
             }}
             bgImage={SECTION2_IMAGE}
             position={s2Positions[2]}
-            imageWidth={s2ImageWidth}
+            imageNaturalWidth={s2NaturalSize.width}
+            imageNaturalHeight={s2NaturalSize.height}
             focalX={focal2}
-            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[160px] md:min-h-0"
+            focalY={0.4}
+            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[140px] sm:min-h-[160px] md:min-h-0"
             style={s2Reveal.getAnimStyle(2)}
           >
-            <h2 className="absolute top-4 left-5 md:top-6 md:left-7 text-white md:text-black text-[clamp(2.5rem,6.5vw,5.5rem)] font-bold leading-[0.9] z-10">
-              Bridal &
+            <h2 className="absolute top-4 left-4 sm:left-5 md:top-6 md:left-7 text-black text-[clamp(2.2rem,6vw,5.5rem)] font-black leading-[0.9] z-10 drop-shadow-xs">
+              Bridal &amp;
               <br />
               Party Makeover
             </h2>
+            <div className="absolute bottom-4 left-4 sm:left-5 md:bottom-6 md:left-7 z-10">
+              <span className="text-[11px] md:text-xs font-bold uppercase tracking-wider bg-white/85 backdrop-blur-xs text-black px-2.5 py-1 rounded-md shadow-xs border border-black/5">
+                All Over Gwalior Home Service
+              </span>
+            </div>
           </MaskedCard>
 
-          {/* Card 3 - Bottom Full Width (Services Highlights) */}
+          {/* Card 3 - Bottom Full Width (Services Highlights - PARTY MAKEUP HIGH CONTRAST FIX) */}
           <MaskedCard
             cardRef={(el) => {
               s2CardsRef.current[3] = el;
             }}
             bgImage={SECTION2_IMAGE}
             position={s2Positions[3]}
-            imageWidth={s2ImageWidth}
+            imageNaturalWidth={s2NaturalSize.width}
+            imageNaturalHeight={s2NaturalSize.height}
             focalX={focal2}
-            className="col-span-1 md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden relative min-h-[200px] md:min-h-0"
+            focalY={0.4}
+            className="col-span-1 md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden relative min-h-[260px] md:min-h-0"
             style={s2Reveal.getAnimStyle(3)}
           >
-            <div className="absolute inset-0 z-10 flex flex-wrap md:flex-nowrap gap-1.5 md:gap-2 p-2 md:p-3">
-              {servicesHighlight.map((svc) => (
-                <div
-                  key={svc.name}
-                  onClick={() => handleSelectFromAnywhere(svc.name.replace('\n', ' '))}
-                  className={`flex-1 min-w-[calc(50%-4px)] md:min-w-0 rounded-xl md:rounded-2xl p-3 md:p-5 flex flex-col justify-between cursor-pointer transition-transform hover:scale-[1.02] ${
-                    svc.active ? 'bg-white/90 backdrop-blur-md' : 'bg-white/20 backdrop-blur-xl'
-                  }`}
-                >
-                  <h3
-                    className={`text-xl md:text-4xl font-bold leading-[1.05] whitespace-pre-line ${
-                      svc.active ? 'text-black' : 'text-white'
+            <div className="absolute inset-0 z-10 grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2 p-2 md:p-3">
+              {servicesHighlight.map((svc) => {
+                const cleanName = svc.name.replace('\n', ' ');
+                const isSelected = selectedServices.some(
+                  (s) => s.toLowerCase() === cleanName.toLowerCase()
+                );
+                return (
+                  <div
+                    key={svc.name}
+                    onClick={() => handleSelectFromAnywhere(cleanName)}
+                    className={`rounded-xl md:rounded-2xl p-2.5 sm:p-3 md:p-4 lg:p-5 flex flex-col justify-between cursor-pointer transition-all duration-200 hover:scale-[1.02] shadow-sm ${
+                      isSelected
+                        ? 'bg-black text-white hover:bg-neutral-900 border border-black shadow-md ring-2 ring-black'
+                        : 'bg-white/95 hover:bg-white text-black border border-black/15 backdrop-blur-md hover:shadow-lg'
                     }`}
                   >
-                    {svc.name}
-                  </h3>
-                  {svc.num ? (
-                    <div
-                      className={`self-end w-8 h-8 md:w-12 md:h-12 rounded-full border flex items-center justify-center text-xs md:text-sm font-semibold ${
-                        svc.active ? 'border-black text-black' : 'border-white text-white'
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`text-[10px] md:text-xs font-extrabold uppercase tracking-wider ${
+                          isSelected ? 'text-neutral-400' : 'text-neutral-600'
+                        }`}
+                      >
+                        {svc.tag}
+                      </span>
+                      {svc.num && (
+                        <span
+                          className={`text-[10px] md:text-xs font-mono font-bold ${
+                            isSelected ? 'text-neutral-400' : 'text-neutral-500'
+                          }`}
+                        >
+                          {svc.num}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Sharp, high-contrast dark black font for Party Makeup and all service cards */}
+                    <h3
+                      className={`text-base sm:text-lg md:text-xl lg:text-2xl font-black leading-[1.1] whitespace-pre-line my-1.5 ${
+                        isSelected ? 'text-white' : 'text-black'
                       }`}
                     >
-                      {svc.num}
+                      {svc.name}
+                    </h3>
+
+                    <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-black/10">
+                      <span
+                        className={`text-[10px] sm:text-xs font-bold underline ${
+                          isSelected ? 'text-emerald-300' : 'text-neutral-800'
+                        }`}
+                      >
+                        {isSelected ? '✓ Selected in Booking' : 'Book Service →'}
+                      </span>
+                      <div
+                        className={`w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold shadow-xs ${
+                          isSelected
+                            ? 'bg-white text-black'
+                            : 'bg-black text-white'
+                        }`}
+                      >
+                        {isSelected ? '✓' : '+'}
+                      </div>
                     </div>
-                  ) : (
-                    <div
-                      className={`self-end w-8 h-8 md:w-12 md:h-12 rounded-full border flex items-center justify-center text-xs md:text-sm font-semibold ${
-                        svc.active ? 'border-black text-black' : 'border-white text-white'
-                      }`}
-                    >
-                      +
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </MaskedCard>
         </div>
@@ -894,7 +1239,7 @@ export default function App() {
       <section
         id="home-services"
         ref={s3Reveal.containerRef}
-        className="min-h-screen md:h-screen w-full overflow-hidden flex flex-col pt-1.5 md:pt-2 px-3 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
+        className="min-h-screen md:h-screen w-full overflow-hidden flex flex-col pt-1.5 md:pt-2 px-2.5 sm:px-4 md:px-5 pb-1.5 md:pb-2 gap-1.5 md:gap-2"
       >
         <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2">
           {/* Left Column */}
@@ -902,22 +1247,22 @@ export default function App() {
             {/* 1. Heading Card */}
             <div
               style={s3Reveal.getAnimStyle(0)}
-              className="rounded-xl md:rounded-2xl bg-stone-50 p-5 md:p-7 flex flex-col justify-between flex-[1.2] min-h-[180px] md:min-h-0 border border-black/5"
+              className="rounded-xl md:rounded-2xl bg-stone-50 p-4 sm:p-5 md:p-7 flex flex-col justify-between flex-[1.2] min-h-[160px] sm:min-h-[180px] md:min-h-0 border border-black/5"
             >
-              <h2 className="text-[clamp(2.8rem,7vw,6.5rem)] font-bold leading-[0.95] text-black">
+              <h2 className="text-[clamp(2.4rem,7vw,6.5rem)] font-bold leading-[0.95] text-black">
                 Home
                 <br />
                 Salon
               </h2>
               <p className="text-xs md:text-sm font-semibold text-black">
-                Doorstep Beauty Care in City Centre, Morar, Lashkar & All Gwalior
+                Doorstep Beauty Care in City Centre, Morar, Lashkar &amp; All Gwalior
               </p>
             </div>
 
             {/* 2. Two Image Cards (Real Salon & Facial Skincare photos) */}
             <div
               style={s3Reveal.getAnimStyle(1)}
-              className="flex gap-1.5 md:gap-2 flex-1 min-h-[140px] md:min-h-0"
+              className="flex gap-1.5 md:gap-2 flex-1 min-h-[130px] sm:min-h-[140px] md:min-h-0"
             >
               <div className="flex-1 rounded-xl md:rounded-2xl overflow-hidden relative group">
                 <img
@@ -926,7 +1271,7 @@ export default function App() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full font-medium">
-                  Hair Spa & Styling
+                  Hair Spa &amp; Styling
                 </span>
               </div>
               <div className="flex-1 rounded-xl md:rounded-2xl overflow-hidden relative group">
@@ -936,7 +1281,7 @@ export default function App() {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <span className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full font-medium">
-                  Facial & Skincare
+                  Facial &amp; Skincare
                 </span>
               </div>
             </div>
@@ -944,16 +1289,16 @@ export default function App() {
             {/* 3. Consultation Card */}
             <div
               style={s3Reveal.getAnimStyle(2)}
-              className="rounded-xl md:rounded-2xl bg-zinc-200 p-5 md:p-7 flex items-end justify-between flex-[0.8] min-h-[160px] md:min-h-0"
+              className="rounded-xl md:rounded-2xl bg-zinc-200 p-4 sm:p-5 md:p-7 flex items-end justify-between flex-[0.8] min-h-[140px] sm:min-h-[160px] md:min-h-0"
             >
               <div>
-                <p className="text-xs md:text-sm font-semibold text-black mb-2 md:mb-3">
+                <p className="text-xs md:text-sm font-semibold text-black mb-1 sm:mb-2 md:mb-3">
                   Glow Mitra Consultation
                 </p>
-                <h3 className="text-xl md:text-3xl font-bold text-black leading-6 md:leading-8">
+                <h3 className="text-lg sm:text-xl md:text-3xl font-bold text-black leading-tight sm:leading-6 md:leading-8">
                   Home Salon
                   <br />
-                  & Makeover
+                  &amp; Makeover
                   <br />
                   in Gwalior
                 </h3>
@@ -963,7 +1308,7 @@ export default function App() {
                   const el = document.getElementById('whatsapp-booking');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-5 py-3 md:px-8 md:py-5 bg-white rounded-full text-black text-base md:text-xl font-bold hover:scale-105 transition-transform cursor-pointer shadow-md"
+                className="px-4 py-2.5 sm:px-6 sm:py-3 md:px-8 md:py-5 bg-white rounded-full text-black text-sm sm:text-base md:text-xl font-bold hover:scale-105 transition-transform cursor-pointer shadow-md"
               >
                 Book Online
               </button>
@@ -973,7 +1318,7 @@ export default function App() {
           {/* Right Column: Single tall image card with luxury glowing model */}
           <div
             style={s3Reveal.getAnimStyle(3)}
-            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[350px] md:min-h-0"
+            className="rounded-xl md:rounded-2xl overflow-hidden relative min-h-[320px] sm:min-h-[350px] md:min-h-0"
           >
             <img
               src={SECTION3_BG}
@@ -982,29 +1327,29 @@ export default function App() {
             />
 
             {/* Overlay container */}
-            <div className="absolute bottom-3 left-3 right-3 md:bottom-5 md:left-5 md:right-5 flex gap-1.5 md:gap-2">
+            <div className="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-4 sm:left-4 sm:right-4 md:bottom-5 md:left-5 md:right-5 flex gap-1.5 md:gap-2">
               {/* Overlay Card 1 (white, left) */}
               <div
                 onClick={() => {
                   const el = document.getElementById('all-services');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="flex-1 bg-white rounded-xl md:rounded-2xl p-3 md:p-5 flex flex-col justify-between h-36 md:h-52 cursor-pointer hover:bg-neutral-50 transition-colors shadow-lg"
+                className="flex-1 bg-white rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-h-[130px] sm:min-h-[140px] md:h-52 cursor-pointer hover:bg-neutral-50 transition-colors shadow-lg"
               >
-                <h4 className="text-lg md:text-2xl font-bold text-black leading-5 md:leading-7">
+                <h4 className="text-sm sm:text-base md:text-2xl font-bold text-black leading-tight sm:leading-5 md:leading-7">
                   The Process
                   <br />
                   of In-Home
                   <br />
                   Care
                 </h4>
-                <div className="self-end w-9 h-9 md:w-12 md:h-12 rounded-full border border-black flex items-center justify-center">
+                <div className="self-end w-7 h-7 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full border border-black flex items-center justify-center mt-1">
                   <svg
-                    width="14"
-                    height="14"
+                    width="12"
+                    height="12"
                     viewBox="0 0 14 14"
                     fill="none"
-                    className="rotate-[-45deg]"
+                    className="rotate-[-45deg] sm:w-[14px] sm:h-[14px]"
                   >
                     <path
                       d="M1 7h12m0 0L8 2m5 5L8 12"
@@ -1023,22 +1368,22 @@ export default function App() {
                   const el = document.getElementById('whatsapp-booking');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="flex-1 bg-white/20 backdrop-blur-xl rounded-xl md:rounded-2xl p-3 md:p-5 flex flex-col justify-between h-36 md:h-52 cursor-pointer hover:bg-white/30 transition-colors shadow-lg"
+                className="flex-1 bg-white/20 backdrop-blur-xl rounded-xl md:rounded-2xl p-2.5 sm:p-4 md:p-5 flex flex-col justify-between min-h-[130px] sm:min-h-[140px] md:h-52 cursor-pointer hover:bg-white/30 transition-colors shadow-lg"
               >
-                <h4 className="text-lg md:text-2xl font-bold text-white leading-5 md:leading-7">
+                <h4 className="text-sm sm:text-base md:text-2xl font-bold text-white leading-tight sm:leading-5 md:leading-7">
                   Caring
                   <br />
-                  for Skin &
+                  for Skin &amp;
                   <br />
                   Hair Health
                 </h4>
-                <div className="self-end w-9 h-9 md:w-12 md:h-12 rounded-full border border-white flex items-center justify-center text-white">
+                <div className="self-end w-7 h-7 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full border border-white flex items-center justify-center text-white mt-1">
                   <svg
-                    width="14"
-                    height="14"
+                    width="12"
+                    height="12"
                     viewBox="0 0 14 14"
                     fill="none"
-                    className="rotate-[-45deg]"
+                    className="rotate-[-45deg] sm:w-[14px] sm:h-[14px]"
                   >
                     <path
                       d="M1 7h12m0 0L8 2m5 5L8 12"
@@ -1051,6 +1396,198 @@ export default function App() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          NEW SECTION: LATEST PACKAGES & FESTIVE OFFERS
+          Ganesh Chaturthi (10% Off) & Karwa Chauth (₹999 Deals)
+          ======================================================== */}
+      <section id="latest-packages" className="py-16 md:py-24 px-4 md:px-8 bg-gradient-to-b from-stone-100/90 via-amber-50/25 to-stone-50 border-t border-black/10">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-14 gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-600 to-rose-600 text-white text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm">
+                <span>🎉 Special Festive Doorstep Offers</span>
+                <span>•</span>
+                <span>Exclusively for Females</span>
+              </div>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-black tracking-tight leading-tight">
+                Latest Packages &amp;
+                <br />
+                Festive Home Combos
+              </h2>
+              <p className="text-neutral-700 text-sm md:text-base mt-2 font-medium">
+                Ganesh Chaturthi 10% Off Specials &amp; Karwa Chauth ₹999 Home Service Packages in Gwalior
+              </p>
+            </div>
+            <div className="max-w-md bg-white/90 backdrop-blur-sm p-4 md:p-5 rounded-2xl border border-black/10 shadow-xs">
+              <p className="text-xs md:text-sm text-neutral-700 leading-relaxed">
+                ✨ <strong>Doorstep salon luxury by Chinki Hankare:</strong> Select any package below to instantly populate your customized WhatsApp booking message with all included services.
+              </p>
+            </div>
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2 mb-8">
+            {(['All', 'Ganesh Chaturthi', 'Karwa Chauth'] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActivePackageFilter(cat)}
+                className={`px-4 py-2 rounded-full text-xs md:text-sm font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activePackageFilter === cat
+                    ? 'bg-black text-white shadow-md'
+                    : 'bg-white border border-black/15 text-black hover:bg-neutral-100'
+                }`}
+              >
+                <span>{cat === 'All' ? 'All Packages (5)' : `${cat} Offers`}</span>
+                {cat === 'Ganesh Chaturthi' && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 font-extrabold">
+                    10% Off
+                  </span>
+                )}
+                {cat === 'Karwa Chauth' && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-rose-200 text-rose-900 font-extrabold">
+                    Just ₹999
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Grid of Packages */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {filteredPackages.map((pkg) => {
+              const isSelected = selectedPackages.includes(pkg.id);
+              const isGanesh = pkg.festivalType === 'Ganesh Chaturthi';
+
+              return (
+                <div
+                  key={pkg.id}
+                  className={`rounded-2xl border transition-all duration-300 flex flex-col justify-between overflow-hidden relative ${
+                    isSelected
+                      ? 'bg-white border-black ring-2 ring-black shadow-xl scale-[1.01]'
+                      : 'bg-white/95 border-black/15 hover:border-black/35 hover:shadow-lg'
+                  }`}
+                >
+                  {/* Top Badge Strip */}
+                  <div
+                    className={`px-5 py-2.5 flex items-center justify-between text-xs font-bold ${
+                      isGanesh
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white'
+                        : 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
+                    }`}
+                  >
+                    <span>{pkg.offerBadge}</span>
+                    <span className="text-[10px] uppercase tracking-wider bg-black/20 px-2 py-0.5 rounded-full backdrop-blur-xs">
+                      {pkg.savingsText}
+                    </span>
+                  </div>
+
+                  {/* Card Body */}
+                  <div className="p-5 md:p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      {/* Price row */}
+                      <div className="flex items-baseline justify-between mb-3">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl md:text-4xl font-black text-black">
+                            ₹{pkg.price.toLocaleString('en-IN')}
+                          </span>
+                          <span className="text-sm font-semibold text-neutral-400 line-through">
+                            ₹{pkg.originalPrice}
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-stone-100 text-neutral-800 border border-black/5">
+                          Doorstep Salon
+                        </span>
+                      </div>
+
+                      {/* Package Name */}
+                      <h3 className="text-lg md:text-xl font-extrabold text-black leading-snug mb-2">
+                        {pkg.name}
+                      </h3>
+                      <p className="text-xs text-neutral-600 mb-4 leading-relaxed">
+                        {pkg.description}
+                      </p>
+
+                      {/* Included Items List */}
+                      <div className="space-y-2 py-3 border-t border-b border-black/10 bg-stone-50/70 -mx-5 px-5 md:-mx-6 md:px-6 mb-4">
+                        <span className="text-[10px] uppercase tracking-wider font-extrabold text-neutral-500 block">
+                          Included in this package:
+                        </span>
+                        <ul className="space-y-1.5">
+                          {pkg.items.map((item, idx) => (
+                            <li key={idx} className="text-xs font-semibold text-neutral-800 flex items-start gap-2">
+                              <span className="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                ✓
+                              </span>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <button
+                        onClick={() => togglePackage(pkg.id)}
+                        className={`flex-1 py-3 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-black text-white hover:bg-neutral-800 shadow-md'
+                            : 'bg-stone-100 hover:bg-stone-200 text-black border border-black/10'
+                        }`}
+                      >
+                        <span>{isSelected ? '✓ Selected in Booking' : '+ Select Package'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleSelectPackageAndBook(pkg.id)}
+                        className="py-3 px-4 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition-all cursor-pointer shrink-0 shadow-sm flex items-center justify-center gap-1"
+                        title="Book via WhatsApp now"
+                      >
+                        <span>Book on WhatsApp →</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Quick Notice Banner below packages */}
+          <div className="mt-8 p-4 md:p-6 bg-white rounded-2xl border border-black/15 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-sm">
+                {selectedPackages.length}
+              </div>
+              <div>
+                <h4 className="text-sm md:text-base font-bold text-black">
+                  {selectedPackages.length > 0
+                    ? `${selectedPackages.length} Special Package(s) Selected for Home Visit`
+                    : 'No package selected yet'}
+                </h4>
+                <p className="text-xs text-neutral-600">
+                  {selectedPackages.length > 0
+                    ? LATEST_PACKAGES_DATA.filter((p) => selectedPackages.includes(p.id))
+                        .map((p) => `${p.name} (₹${p.price})`)
+                        .join(' • ')
+                    : 'Click "+ Select Package" on any card above to auto-populate your booking details.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                const el = document.getElementById('whatsapp-booking');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-6 py-3 bg-black text-white text-xs md:text-sm font-bold rounded-full hover:bg-neutral-800 transition-colors shadow-md shrink-0 cursor-pointer"
+            >
+              Continue to WhatsApp Booking ↓
+            </button>
           </div>
         </div>
       </section>
@@ -1219,11 +1756,11 @@ export default function App() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 items-start">
             {/* Left Form (7 Cols) */}
-            <form onSubmit={handleSendWhatsApp} className="lg:col-span-7 space-y-6 bg-stone-50 p-6 md:p-8 rounded-2xl border border-black/10 shadow-sm">
+            <form onSubmit={handleSendWhatsApp} className="lg:col-span-7 space-y-5 md:space-y-6 bg-stone-50 p-4 sm:p-6 md:p-8 rounded-2xl border border-black/10 shadow-sm">
               {/* 1. Client Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-black uppercase tracking-wider mb-1.5">
                     Your Full Name *
@@ -1234,7 +1771,7 @@ export default function App() {
                     placeholder="e.g. Anjali Sharma"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                    className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
 
@@ -1247,7 +1784,7 @@ export default function App() {
                     placeholder="e.g. 98260XXXXX"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                    className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
               </div>
@@ -1257,13 +1794,15 @@ export default function App() {
                 <label className="block text-xs font-bold text-black uppercase tracking-wider mb-1.5">
                   Select Booking Location in Gwalior *
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {LOCATIONS.map((loc) => (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
+                  {LOCATIONS.map((loc, idx) => (
                     <button
                       type="button"
                       key={loc}
                       onClick={() => setClientLocation(loc)}
                       className={`px-3 py-2.5 rounded-xl text-xs font-bold border transition-all text-center cursor-pointer ${
+                        idx === LOCATIONS.length - 1 ? 'col-span-2 sm:col-span-1' : ''
+                      } ${
                         clientLocation === loc
                           ? 'bg-black text-white border-black shadow'
                           : 'bg-white text-black border-black/15 hover:bg-neutral-100'
@@ -1285,19 +1824,112 @@ export default function App() {
                   placeholder="e.g. Flat 302, Royal Residency, Morar / DB City"
                   value={clientAddress}
                   onChange={(e) => setClientAddress(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                  className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                 />
               </div>
 
-              {/* 4. Multi-Select Services chips */}
+              {/* 4. Special Festive Packages Selection */}
+              <div className="p-3.5 sm:p-4 bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-transparent rounded-2xl border border-amber-600/20">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2.5 gap-1">
+                  <label className="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🎁 Special Festive Packages ({selectedPackages.length} selected)</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-bold text-rose-700">
+                      Ganesh (10% Off) • Karwa Chauth (₹999)
+                    </span>
+                    {selectedPackages.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPackages([])}
+                        className="text-[11px] font-bold text-neutral-600 hover:text-red-600 underline cursor-pointer"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {LATEST_PACKAGES_DATA.map((pkg) => {
+                    const active = selectedPackages.includes(pkg.id);
+                    return (
+                      <div
+                        key={pkg.id}
+                        onClick={() => togglePackage(pkg.id)}
+                        className={`p-3 rounded-xl border text-xs cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                          active
+                            ? 'bg-black text-white border-black shadow-md'
+                            : 'bg-white text-black border-black/15 hover:bg-stone-100'
+                        }`}
+                      >
+                        <div className="flex items-start sm:items-center gap-2.5 flex-1 min-w-0">
+                          <span
+                            className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 sm:mt-0 ${
+                              active ? 'bg-emerald-400 text-black' : 'border border-black/30'
+                            }`}
+                          >
+                            {active ? '✓' : ''}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="font-bold flex flex-wrap items-center gap-1.5">
+                              <span>{pkg.name}</span>
+                              <span
+                                className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                                  active
+                                    ? 'bg-white/20 text-white'
+                                    : 'bg-rose-100 text-rose-800'
+                                }`}
+                              >
+                                {pkg.offerBadge}
+                              </span>
+                            </div>
+                            <div
+                              className={`text-[11px] mt-0.5 truncate ${
+                                active ? 'text-neutral-300' : 'text-neutral-600'
+                              }`}
+                            >
+                              {pkg.items.join(' • ')}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                          <span className="text-[11px] line-through text-neutral-400">
+                            ₹{pkg.originalPrice}
+                          </span>
+                          <span
+                            className={`font-black text-sm ${
+                              active ? 'text-emerald-300' : 'text-emerald-700'
+                            }`}
+                          >
+                            ₹{pkg.price}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 5. Multi-Select A-la-carte Services chips */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-black uppercase tracking-wider">
-                    Selected Services ({selectedServices.length})
+                    Add A-la-carte Services ({selectedServices.length} selected)
                   </label>
-                  <span className="text-[11px] text-neutral-500">Tap to toggle services</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-neutral-500">Tap to toggle</span>
+                    {selectedServices.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedServices([])}
+                        className="text-[11px] font-bold text-neutral-600 hover:text-red-600 underline cursor-pointer"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-white rounded-xl border border-black/15">
+                <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-2.5 bg-white rounded-xl border border-black/15">
                   {ALL_SERVICES_NAMES.map((sName) => {
                     const active = selectedServices.includes(sName);
                     return (
@@ -1307,7 +1939,7 @@ export default function App() {
                         onClick={() => toggleService(sName)}
                         className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                           active
-                            ? 'bg-black text-white'
+                            ? 'bg-black text-white shadow-xs'
                             : 'bg-stone-100 text-neutral-700 hover:bg-stone-200'
                         }`}
                       >
@@ -1319,8 +1951,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 5. Date & Time Slot */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* 6. Date & Time Slot */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-black uppercase tracking-wider mb-1.5">
                     Preferred Date
@@ -1329,7 +1961,7 @@ export default function App() {
                     type="date"
                     value={preferredDate}
                     onChange={(e) => setPreferredDate(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                    className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                   />
                 </div>
 
@@ -1340,7 +1972,7 @@ export default function App() {
                   <select
                     value={preferredSlot}
                     onChange={(e) => setPreferredSlot(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                    className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                   >
                     <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
                     <option value="Afternoon (12 PM - 4 PM)">Afternoon (12 PM - 4 PM)</option>
@@ -1350,7 +1982,7 @@ export default function App() {
                 </div>
               </div>
 
-              {/* 6. Notes */}
+              {/* 7. Notes */}
               <div>
                 <label className="block text-xs font-bold text-black uppercase tracking-wider mb-1.5">
                   Special Instructions or Event Timing (Optional)
@@ -1360,14 +1992,14 @@ export default function App() {
                   placeholder="e.g. Wedding function at 6 PM, sensitive skin, etc."
                   value={clientNotes}
                   onChange={(e) => setClientNotes(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-black/15 rounded-xl text-sm font-medium focus:outline-none focus:border-black"
+                  className="w-full px-3.5 sm:px-4 py-3 bg-white border border-black/15 rounded-xl text-base md:text-sm font-medium focus:outline-none focus:border-black transition-colors"
                 />
               </div>
 
               {/* Submit CTA */}
               <button
                 type="submit"
-                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-base shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-base shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
               >
                 {/* Inline WhatsApp SVG */}
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -1393,7 +2025,7 @@ export default function App() {
               </div>
 
               {/* WhatsApp Chat Card */}
-              <div className="bg-[#EFEAE2] p-4 rounded-2xl border border-black/10 shadow-inner flex flex-col gap-2">
+              <div className="bg-[#EFEAE2] p-3 sm:p-4 rounded-2xl border border-black/10 shadow-inner flex flex-col gap-2">
                 <div className="flex items-center gap-3 p-2 bg-[#075E54] text-white rounded-xl shadow-xs">
                   <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm">
                     CH
@@ -1407,25 +2039,25 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Speech Bubble */}
-                <div className="bg-white p-4 rounded-2xl rounded-tr-none shadow-sm text-xs font-mono whitespace-pre-wrap text-neutral-800 leading-relaxed border border-black/5">
+                {/* Speech Bubble with word break and overflow protection */}
+                <div className="bg-white p-3.5 sm:p-4 rounded-2xl rounded-tr-none shadow-sm text-xs font-mono whitespace-pre-wrap break-words overflow-x-auto text-neutral-800 leading-relaxed border border-black/5 max-h-[460px] overflow-y-auto">
                   {generateWhatsAppMessage()}
                 </div>
 
                 <div className="text-right">
-                  <span className="text-[10px] text-neutral-500">Auto-formatted with your selected services</span>
+                  <span className="text-[10px] text-neutral-500">Auto-formatted with your selected packages &amp; services</span>
                 </div>
               </div>
 
               {/* Direct Call / Inquiry Box */}
-              <div className="p-5 bg-stone-100 rounded-2xl border border-black/10 flex flex-col gap-2">
+              <div className="p-4 sm:p-5 bg-stone-100 rounded-2xl border border-black/10 flex flex-col gap-2">
                 <h4 className="text-sm font-bold text-black">Prefer to call directly?</h4>
                 <p className="text-xs text-neutral-600">
                   Speak directly with beautician Chinki Hankare for immediate consultation or customized packages:
                 </p>
                 <a
                   href={`tel:${CONTACT_INFO.phone}`}
-                  className="mt-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white border border-black/20 text-black font-bold text-sm hover:bg-black hover:text-white transition-all"
+                  className="mt-1 inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white border border-black/20 text-black font-bold text-sm hover:bg-black hover:text-white transition-all shadow-xs"
                 >
                   <span>📞 Call Now: +91 {CONTACT_INFO.phone}</span>
                 </a>
@@ -1490,9 +2122,13 @@ export default function App() {
           {/* Quick Services Menu */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider">
-              Popular Services
+              Popular Services &amp; Packages
             </h4>
             <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-xs text-neutral-400">
+              <span className="text-amber-300 font-semibold hover:text-white cursor-pointer" onClick={() => {
+                const el = document.getElementById('latest-packages');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}>🎁 Festive Packages</span>
               <span className="hover:text-white cursor-pointer" onClick={() => handleSelectFromAnywhere('Bridal makeup')}>Bridal Makeup</span>
               <span className="hover:text-white cursor-pointer" onClick={() => handleSelectFromAnywhere('Party makeup')}>Party Makeup</span>
               <span className="hover:text-white cursor-pointer" onClick={() => handleSelectFromAnywhere('Hairstyles')}>Hairstyles</span>
@@ -1545,12 +2181,37 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 9. All Services Catalog Modal (with explicit close) */}
+      {/* 9. Floating Quick WhatsApp & Call Bar (Instant Booking Access on all devices) */}
+      <div className="fixed bottom-4 right-4 z-30 flex items-center gap-2">
+        <a
+          href={`tel:${CONTACT_INFO.phone}`}
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white text-black border border-black/20 shadow-xl flex items-center justify-center text-sm sm:text-base hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          title={`Call Beautician Chinki Hankare: +91 ${CONTACT_INFO.phone}`}
+          aria-label="Direct Phone Call"
+        >
+          📞
+        </a>
+        <button
+          onClick={() => {
+            const el = document.getElementById('whatsapp-booking');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-200 animate-pulse"></span>
+          <span>Book on WhatsApp</span>
+        </button>
+      </div>
+
+      {/* 10. All Services & Packages Catalog Modal (with explicit close) */}
       <ServicesCatalogModal
         isOpen={isCatalogOpen}
         onClose={() => setIsCatalogOpen(false)}
         onSelectService={(svcName) => {
           handleSelectFromAnywhere(svcName);
+        }}
+        onSelectPackage={(pkgId) => {
+          handleSelectPackageAndBook(pkgId);
         }}
       />
     </div>
