@@ -57,9 +57,9 @@ const ALL_SERVICES_NAMES = ALL_SERVICES_DATA.map((s) => s.name);
 export interface PackageItem {
   id: string;
   name: string;
-  festivalType: 'Ganesh Chaturthi' | 'Karwa Chauth';
+  festivalType: 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi';
   offerBadge: string;
-  badgeTone: 'gold' | 'rose';
+  badgeTone: 'gold' | 'rose' | 'amber';
   price: number;
   originalPrice: number;
   savingsText: string;
@@ -69,42 +69,83 @@ export interface PackageItem {
 }
 
 export const LATEST_PACKAGES_DATA: PackageItem[] = [
+  // 1. Navratri Special Offer - Raaga Facial & Rica Wax (₹999)
   {
-    id: 'pkg-hydra-rica-1999',
-    name: 'Hydra Boost Facial & Rica Wax Special',
-    festivalType: 'Ganesh Chaturthi',
-    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
-    badgeTone: 'gold',
-    price: 1999,
-    originalPrice: 2499,
-    savingsText: 'Save ₹500 (10% Off Special)',
+    id: 'pkg-navratri-raga-999',
+    name: 'Navratri Raaga Facial & Rica Wax Special',
+    festivalType: 'Navratri',
+    offerBadge: 'Navratri Special Offer',
+    badgeTone: 'amber',
+    price: 999,
+    originalPrice: 1699,
+    savingsText: 'Just RS 999 • Festive Deal',
     items: [
-      'Hydra boost facial',
-      'Rica wax -- full arms, full legs, underarms',
-      'Root to touch up',
-      'Eyebrows & upper lips',
+      'Raga facial',
+      'Rica wax -- full arms, underarms',
+      'De-tan pack included (FREE)',
+      'Eyebrow',
     ],
-    description: 'Deep hydration facial paired with premium gentle Rica waxing, root hair touch-up, and threading.',
+    description: 'Festive Raaga brightening facial paired with smooth Rica waxing on arms & underarms, de-tan pack, and neat eyebrow grooming.',
     popular: true,
   },
+  // 2. Navratri Special Offer - Fruit Facial & Rica Wax (₹999)
   {
-    id: 'pkg-korean-rica-1999',
-    name: 'Korean Glass Facial & Hair Colour Package',
-    festivalType: 'Ganesh Chaturthi',
-    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
-    badgeTone: 'gold',
-    price: 1999,
-    originalPrice: 2499,
-    savingsText: 'Save ₹500 (10% Off Special)',
+    id: 'pkg-navratri-fruit-rica-999',
+    name: 'Navratri Fruit Facial & Rica Wax Special',
+    festivalType: 'Navratri',
+    offerBadge: 'Navratri Special Offer',
+    badgeTone: 'amber',
+    price: 999,
+    originalPrice: 1599,
+    savingsText: 'Just RS 999 • Festive Deal',
     items: [
-      'Korean glass facial',
-      'Rica wax -- full arms, full legs, underarms',
-      'Hair colour application',
-      'Eyebrows, upper lips & forehead',
+      'Fruit facial',
+      'Rica wax -- full arms, underarms',
+      'De-tan pack included (FREE)',
+      'Eyebrow',
     ],
-    description: 'Trending Korean glass skin therapy with gentle Rica waxing, full hair colour and clean brow grooming.',
+    description: 'Fresh fruit antioxidant facial with gentle Rica wax on full arms and underarms, complimentary de-tan pack, and brow shaping.',
     popular: true,
   },
+  // 3. Navratri Special Offer - Fruit Facial, Mani-Pedi & Honey Wax (₹1299)
+  {
+    id: 'pkg-navratri-fruit-manipedi-1299',
+    name: 'Navratri Fruit Facial, Mani-Pedi & Wax Combo',
+    festivalType: 'Navratri',
+    offerBadge: 'Navratri Special Offer',
+    badgeTone: 'amber',
+    price: 1299,
+    originalPrice: 1999,
+    savingsText: 'Just RS 1299 • Complete Combo',
+    items: [
+      'Fruit facial',
+      'Manicure & pedicure',
+      'Honey wax -- full arms, underarms',
+      'Eyebrow',
+    ],
+    description: 'All-in-one head-to-toe makeover: rejuvenating fruit facial, relaxing hand & foot manicure-pedicure spa, smooth honey wax, and eyebrow.',
+    popular: true,
+  },
+  // 4. Navratri Special Offer - Hair Spa, Hair Colour & Fruit Facial (₹1299)
+  {
+    id: 'pkg-navratri-hairspa-colour-fruit-1299',
+    name: 'Navratri Hair Spa, Hair Colour & Fruit Facial Package',
+    festivalType: 'Navratri',
+    offerBadge: 'Navratri Special Offer',
+    badgeTone: 'amber',
+    price: 1299,
+    originalPrice: 2299,
+    savingsText: 'Just RS 1299 • Luxury Makeover',
+    items: [
+      'Hair spa',
+      'Hair colour',
+      'Fruit facial',
+      'Eyebrow',
+    ],
+    description: 'Deep nourishing hair spa therapy, professional hair colouring, radiant fruit glow facial, and clean eyebrow threading.',
+    popular: true,
+  },
+  // 5. Karwa Chauth Raaga Radiance Combo (₹999)
   {
     id: 'pkg-kc-raga-999',
     name: 'Karwa Chauth Raaga Radiance Combo',
@@ -123,6 +164,7 @@ export const LATEST_PACKAGES_DATA: PackageItem[] = [
     description: 'Festive Raaga glow facial combined with honey body waxing, complimentary de-tan treatment & threading.',
     popular: true,
   },
+  // 6. Karwa Chauth Korean Glass Facial Combo (₹999)
   {
     id: 'pkg-kc-korean-999',
     name: 'Karwa Chauth Korean Glass Facial Combo',
@@ -141,6 +183,7 @@ export const LATEST_PACKAGES_DATA: PackageItem[] = [
     description: 'Instant luminous crystal glow facial with full honey waxing, herbal de-tan pack & shaping.',
     popular: true,
   },
+  // 7. Karwa Chauth Hydra Facial Combo (₹999)
   {
     id: 'pkg-kc-hydra-999',
     name: 'Karwa Chauth Hydra Facial Combo',
@@ -157,6 +200,44 @@ export const LATEST_PACKAGES_DATA: PackageItem[] = [
       'De-tan pack included (FREE)',
     ],
     description: 'Deep moisture-infusion Hydra facial plus complete smooth honey waxing and de-tan glow therapy.',
+    popular: true,
+  },
+  // 8. Ganesh Chaturthi Hydra Boost Facial & Rica Wax Special (₹1999)
+  {
+    id: 'pkg-hydra-rica-1999',
+    name: 'Hydra Boost Facial & Rica Wax Special',
+    festivalType: 'Ganesh Chaturthi',
+    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
+    badgeTone: 'gold',
+    price: 1999,
+    originalPrice: 2499,
+    savingsText: 'Save ₹500 (10% Off Special)',
+    items: [
+      'Hydra boost facial',
+      'Rica wax -- full arms, full legs, underarms',
+      'Root to touch up',
+      'Eyebrows & upper lips',
+    ],
+    description: 'Deep hydration facial paired with premium gentle Rica waxing, root hair touch-up, and threading.',
+    popular: true,
+  },
+  // 9. Ganesh Chaturthi Korean Glass Facial & Hair Colour Package (₹1999)
+  {
+    id: 'pkg-korean-rica-1999',
+    name: 'Korean Glass Facial & Hair Colour Package',
+    festivalType: 'Ganesh Chaturthi',
+    offerBadge: 'Ganesh Chaturthi Offer • 10% Off',
+    badgeTone: 'gold',
+    price: 1999,
+    originalPrice: 2499,
+    savingsText: 'Save ₹500 (10% Off Special)',
+    items: [
+      'Korean glass facial',
+      'Rica wax -- full arms, full legs, underarms',
+      'Hair colour application',
+      'Eyebrows, upper lips & forehead',
+    ],
+    description: 'Trending Korean glass skin therapy with gentle Rica waxing, full hair colour and clean brow grooming.',
     popular: true,
   },
 ];
@@ -697,7 +778,7 @@ function ServicesCatalogModal({
                 : 'bg-white text-black border border-black/10 hover:bg-stone-200'
             }`}
           >
-            <span>🎁 Latest Packages (5)</span>
+            <span>🎁 Latest Packages ({LATEST_PACKAGES_DATA.length})</span>
             <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded-full font-extrabold">Offers</span>
           </button>
           <button
@@ -717,7 +798,7 @@ function ServicesCatalogModal({
           {modalTab === 'packages' ? (
             <div className="space-y-3">
               <p className="text-xs text-neutral-600 mb-2">
-                Special festive packages for Ganesh Chaturthi (10% Off) & Karwa Chauth (₹999). Click any package to select it and start booking!
+                Special festive packages for Navratri (₹999 &amp; ₹1299), Karwa Chauth (₹999), and Ganesh Chaturthi (10% Off). Click any package to select it and start booking!
               </p>
               {LATEST_PACKAGES_DATA.map((pkg) => (
                 <div
@@ -818,7 +899,7 @@ export default function App() {
 
   // Selected latest packages state (empty by default - customer adds by themselves)
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
-  const [activePackageFilter, setActivePackageFilter] = useState<'All' | 'Ganesh Chaturthi' | 'Karwa Chauth'>('All');
+  const [activePackageFilter, setActivePackageFilter] = useState<'All' | 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi'>('All');
 
   // WhatsApp interactive booking state (empty by default - customer adds by themselves)
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -1420,7 +1501,7 @@ export default function App() {
                 Festive Home Combos
               </h2>
               <p className="text-neutral-700 text-sm md:text-base mt-2 font-medium">
-                Ganesh Chaturthi 10% Off Specials &amp; Karwa Chauth ₹999 Home Service Packages in Gwalior
+                Navratri Specials (₹999 &amp; ₹1299), Karwa Chauth ₹999 Combos &amp; Ganesh Chaturthi 10% Off Home Service Packages in Gwalior
               </p>
             </div>
             <div className="max-w-md bg-white/90 backdrop-blur-sm p-4 md:p-5 rounded-2xl border border-black/10 shadow-xs">
@@ -1432,7 +1513,7 @@ export default function App() {
 
           {/* Filter Pills */}
           <div className="flex flex-wrap items-center gap-2 mb-8">
-            {(['All', 'Ganesh Chaturthi', 'Karwa Chauth'] as const).map((cat) => (
+            {(['All', 'Navratri', 'Karwa Chauth', 'Ganesh Chaturthi'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActivePackageFilter(cat)}
@@ -1442,15 +1523,20 @@ export default function App() {
                     : 'bg-white border border-black/15 text-black hover:bg-neutral-100'
                 }`}
               >
-                <span>{cat === 'All' ? 'All Packages (5)' : `${cat} Offers`}</span>
-                {cat === 'Ganesh Chaturthi' && (
-                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 font-extrabold">
-                    10% Off
+                <span>{cat === 'All' ? `All Packages (${LATEST_PACKAGES_DATA.length})` : `${cat} Offers`}</span>
+                {cat === 'Navratri' && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-900 font-extrabold">
+                    ₹999 / ₹1299
                   </span>
                 )}
                 {cat === 'Karwa Chauth' && (
                   <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-rose-200 text-rose-900 font-extrabold">
                     Just ₹999
+                  </span>
+                )}
+                {cat === 'Ganesh Chaturthi' && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-200 text-amber-900 font-extrabold">
+                    10% Off
                   </span>
                 )}
               </button>
@@ -1461,7 +1547,13 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {filteredPackages.map((pkg) => {
               const isSelected = selectedPackages.includes(pkg.id);
+              const isNavratri = pkg.festivalType === 'Navratri';
               const isGanesh = pkg.festivalType === 'Ganesh Chaturthi';
+              const badgeGradient = isNavratri
+                ? 'bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 text-white'
+                : isGanesh
+                ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white'
+                : 'bg-gradient-to-r from-rose-600 to-pink-600 text-white';
 
               return (
                 <div
@@ -1474,11 +1566,7 @@ export default function App() {
                 >
                   {/* Top Badge Strip */}
                   <div
-                    className={`px-5 py-2.5 flex items-center justify-between text-xs font-bold ${
-                      isGanesh
-                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white'
-                        : 'bg-gradient-to-r from-rose-600 to-pink-600 text-white'
-                    }`}
+                    className={`px-5 py-2.5 flex items-center justify-between text-xs font-bold ${badgeGradient}`}
                   >
                     <span>{pkg.offerBadge}</span>
                     <span className="text-[10px] uppercase tracking-wider bg-black/20 px-2 py-0.5 rounded-full backdrop-blur-xs">
@@ -1835,8 +1923,8 @@ export default function App() {
                     <span>🎁 Special Festive Packages ({selectedPackages.length} selected)</span>
                   </label>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold text-rose-700">
-                      Ganesh (10% Off) • Karwa Chauth (₹999)
+                    <span className="text-[11px] font-bold text-amber-800">
+                      Navratri (₹999 / ₹1299) • Karwa Chauth (₹999) • Ganesh (10% Off)
                     </span>
                     {selectedPackages.length > 0 && (
                       <button
