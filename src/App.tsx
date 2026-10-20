@@ -22,37 +22,90 @@ const servicesHighlight = [
   { name: 'Facial &\nClean Up', num: null, active: false, tag: 'Glow' },
 ];
 
+export type ServiceCategory =
+  | 'Threading & Face Grooming'
+  | 'Classic Facial'
+  | 'Luxury Facial'
+  | 'Premium Facial'
+  | 'Clean Up'
+  | 'Manicure & Pedicure'
+  | 'Makeup & Hair'
+  | 'Waxing & Body Care';
+
 export interface ServiceItem {
   id: string;
   name: string;
-  category: 'Makeup & Hair' | 'Skin & Facial' | 'Spa & Massage' | 'Waxing & Grooming';
+  category: ServiceCategory;
+  price: number;
   description: string;
   popular?: boolean;
 }
 
-const ALL_SERVICES_DATA: ServiceItem[] = [
-  { id: 'bridal-makeup', name: 'Bridal makeup', category: 'Makeup & Hair', description: 'Complete traditional & HD bridal makeover with high-end cosmetics.', popular: true },
-  { id: 'party-makeup', name: 'Party makeup', category: 'Makeup & Hair', description: 'Glamorous, long-wearing makeup tailored for wedding guests & events.', popular: true },
-  { id: 'hairstyles', name: 'Hairstyles', category: 'Makeup & Hair', description: 'Designer buns, soft waves, braids, and customized event styling.', popular: true },
-  { id: 'waxing', name: 'Waxing', category: 'Waxing & Grooming', description: 'Hygienic, smooth full body & arms/legs waxing with gentle soothing care.' },
-  { id: 'facial', name: 'Facial', category: 'Skin & Facial', description: 'Deep cleansing, gentle exfoliation & skin brightening facial glow.', popular: true },
-  { id: 'manicure-pedicure', name: 'Manicure pedicure', category: 'Spa & Massage', description: 'Relaxing hand & foot spa with cuticle grooming and soothing massage.' },
-  { id: 'hair-spa', name: 'Hair spa', category: 'Spa & Massage', description: 'Intensive nourishing hair therapy for silky, frizz-free, healthy hair.', popular: true },
-  { id: 'head-massage', name: 'Head massage', category: 'Spa & Massage', description: 'Stress-relieving warm herbal oil head massage and relaxation.' },
-  { id: 'haircut', name: 'Haircut', category: 'Makeup & Hair', description: 'Precision styling, layers, feather cuts & customized hair trimming.' },
-  { id: 'threading', name: 'Threading', category: 'Waxing & Grooming', description: 'Flawless eyebrow shaping, upper lip, forehead, and chin threading.' },
-  { id: 'clean-up', name: 'Clean up', category: 'Skin & Facial', description: 'Instant refresh for clogged pores, blackheads removal & skin polish.' },
-  { id: 'body-polishing', name: 'Body polishing', category: 'Spa & Massage', description: 'Exfoliating full-body glow therapy leaving skin deeply radiant & soft.' },
-  { id: 'body-massage', name: 'Body massage', category: 'Spa & Massage', description: 'Full body restorative relaxing massage strictly for females at home.' },
-  { id: 'de-tan-pack', name: 'De-tan pack', category: 'Skin & Facial', description: 'Effective tan removal herbal pack restoring natural skin tone.' },
-  { id: 'bleach', name: 'Bleach', category: 'Skin & Facial', description: 'Skin-safe golden/oxy bleach for instant glow and facial hair blending.' },
-  { id: 'root-touch-up', name: 'Root touch up', category: 'Makeup & Hair', description: 'Seamless grey root coverage and professional hair color application.' },
-  { id: 'bikini-wax', name: 'Bikini wax', category: 'Waxing & Grooming', description: 'Utmost hygienic, private and painless premium strip/stripless wax.' },
-  { id: 'face-wax', name: 'Face wax', category: 'Waxing & Grooming', description: 'Delicate facial wax for smooth upper lips, sideburns & peach fuzz.' },
-  { id: 'highlights', name: 'Highlights', category: 'Makeup & Hair', description: 'Custom blonde, caramel or burgundy hair streaks for dimension.' },
+export const ALL_SERVICES_DATA: ServiceItem[] = [
+  // 1. Threading & Face Grooming
+  { id: 'eyebrow', name: 'Eyebrow', category: 'Threading & Face Grooming', price: 40, description: 'Neat, symmetric shape & precise eyebrow hair threading.', popular: true },
+  { id: 'upper-lips', name: 'Upper lips', category: 'Threading & Face Grooming', price: 25, description: 'Quick, gentle upper lip hair threading for clean smooth skin.', popular: true },
+  { id: 'forehead', name: 'Forehead', category: 'Threading & Face Grooming', price: 25, description: 'Forehead threading to clear fine hair and frame the face.' },
+  { id: 'chin', name: 'Chin', category: 'Threading & Face Grooming', price: 25, description: 'Accurate chin hair removal for a refined, flawless finish.' },
+  { id: 'side-lock', name: 'Side lock', category: 'Threading & Face Grooming', price: 60, description: 'Side lock hair refinement & temple hairline shaping.' },
+
+  // 2. Classic Facial (₹650)
+  { id: 'fruit-facial', name: 'Fruit facial', category: 'Classic Facial', price: 650, description: 'Fresh fruit enzymes to gently exfoliate, detox, and brighten natural complexion.', popular: true },
+  { id: 'de-tan-facial', name: 'De-tan facial', category: 'Classic Facial', price: 650, description: 'Targeted botanical tan removal restoring original skin tone & glow.', popular: true },
+  { id: 'vitamin-c-facial', name: 'Vitamin C facial', category: 'Classic Facial', price: 650, description: 'Potent antioxidant Vitamin C therapy to fight dark spots and impart radiant glow.' },
+  { id: 'skin-tightening-facial', name: 'Skin tightening facial', category: 'Classic Facial', price: 650, description: 'Collagen-boosting massage & firming herbal pack for lifted, supple skin.' },
+
+  // 3. Luxury Facial (₹800)
+  { id: 'mama-earth-facial', name: 'Mama Earth facial', category: 'Luxury Facial', price: 800, description: 'Toxin-free, natural goodness for deep nourishment and hydration.', popular: true },
+  { id: 'raga-facial', name: 'Raga facial', category: 'Luxury Facial', price: 800, description: 'Salon-grade professional Raaga formulation for instant radiant party glow.', popular: true },
+  { id: 'gold-facial', name: 'Gold facial', category: 'Luxury Facial', price: 800, description: '24K gold dust and revitalizing botanicals for a luminous golden shine.', popular: true },
+  { id: 'ozone-facial', name: 'Ozone facial', category: 'Luxury Facial', price: 800, description: 'Deep oxygenation therapy to fight pollution, acne marks & dullness.' },
+
+  // 4. Premium Facial (₹1250 - ₹1500)
+  { id: 'hydra-boost-facial', name: 'Hydra boost facial', category: 'Premium Facial', price: 1250, description: 'Deep dermal multi-layer hydration infusion for plump, dewy, intensely soft skin.', popular: true },
+  { id: 'korean-glass-facial', name: 'Korean glass facial', category: 'Premium Facial', price: 1400, description: 'Trending Korean glass-skin protocol with peptide serums for reflective porcelain glow.', popular: true },
+  { id: 'o3-shine-glow-facial', name: 'O3+ shine& glow facial', category: 'Premium Facial', price: 1299, description: 'Award-winning O3+ whitening, derma-cleanse and high-radiance formulation.' },
+  { id: 'o3-bridal-facial', name: 'O3+bridal facial', category: 'Premium Facial', price: 1500, description: 'Ultimate multi-step salon bridal glow by O3+ for long-lasting wedding radiance.', popular: true },
+  { id: 'kanpeki-glass-glow-facial', name: 'Kanpeki glass glow skin facial', category: 'Premium Facial', price: 1399, description: 'Authentic Japanese Kanpeki skincare ritual creating crystal porcelain glass texture.' },
+
+  // 5. Manicure and Pedicure
+  { id: 'aroma-magic-mani-pedi', name: 'Aroma magic --pedicure & manicure', category: 'Manicure & Pedicure', price: 800, description: 'Aromatherapy relaxing hand & foot soak, organic scrub, cuticle care and soothing massage.', popular: true },
+  { id: 'bio-rich-mani-pedi', name: 'Bio rich pedicure and manicure', category: 'Manicure & Pedicure', price: 750, description: 'Botanical deep cleansing hand and foot therapy for smooth heels and soft hands.' },
+  { id: 'o3-mani-pedi', name: 'O3+manicure and pedicure', category: 'Manicure & Pedicure', price: 899, description: 'Premium O3+ whitening & brightening spa ritual for hands, feet and nails.' },
+
+  // 6. Clean Up (₹450)
+  { id: 'fruit-clean-up', name: 'Fruit clean up', category: 'Clean Up', price: 450, description: 'Quick refreshing fruit scrub, blackhead/whitehead removal and skin calming pack.', popular: true },
+  { id: 'de-tan-clean-up', name: 'De-tan clean up', category: 'Clean Up', price: 450, description: 'Effective instant sun-tan removal, gentle exfoliation and brightening face pack.', popular: true },
+  { id: 'papaya-clean-up', name: 'Papaya clean up', category: 'Clean Up', price: 450, description: 'Papaya papain enzyme therapy for gentle blemish correction, tan relief and fresh tone.' },
+
+  // 7. Makeover & Hair Services
+  { id: 'bridal-makeup', name: 'Bridal makeup', category: 'Makeup & Hair', price: 4999, description: 'Complete traditional & HD bridal makeover with high-end international cosmetics.', popular: true },
+  { id: 'party-makeup', name: 'Party makeup', category: 'Makeup & Hair', price: 1499, description: 'Glamorous, long-wearing makeup tailored for wedding guests, receptions & parties.', popular: true },
+  { id: 'hairstyles', name: 'Hairstyles', category: 'Makeup & Hair', price: 499, description: 'Designer buns, soft waves, mermaid braids, and customized event hair styling.', popular: true },
+  { id: 'hair-spa', name: 'Hair spa', category: 'Makeup & Hair', price: 699, description: 'Intensive nourishing deep conditioning hair therapy for silky, frizz-free hair.', popular: true },
+  { id: 'haircut', name: 'Haircut', category: 'Makeup & Hair', price: 299, description: 'Precision styling, layers, feather cuts & customized hair trimming.' },
+  { id: 'hair-colour', name: 'Hair colour', category: 'Makeup & Hair', price: 499, description: 'Professional hair color application with even shade matching.' },
+  { id: 'root-touch-up', name: 'Root touch up', category: 'Makeup & Hair', price: 349, description: 'Seamless grey root coverage and professional touch-up application.' },
+  { id: 'highlights', name: 'Highlights', category: 'Makeup & Hair', price: 999, description: 'Custom blonde, caramel or burgundy hair streaks for dimension.' },
+
+  // 8. Waxing & Body Care
+  { id: 'waxing', name: 'Waxing (Full Arms & Legs)', category: 'Waxing & Body Care', price: 499, description: 'Hygienic, smooth full arms & legs waxing with soothing aloe care.' },
+  { id: 'face-wax', name: 'Face wax', category: 'Waxing & Body Care', price: 199, description: 'Delicate facial wax for smooth upper lips, sideburns & peach fuzz.' },
+  { id: 'bikini-wax', name: 'Bikini wax', category: 'Waxing & Body Care', price: 699, description: 'Utmost hygienic, private and painless premium strip/stripless wax.' },
+  { id: 'bleach', name: 'Bleach', category: 'Waxing & Body Care', price: 250, description: 'Skin-safe golden/oxy bleach for instant glow and facial hair blending.' },
+  { id: 'de-tan-pack', name: 'De-tan pack', category: 'Waxing & Body Care', price: 200, description: 'Effective tan removal herbal pack restoring natural skin tone.' },
+  { id: 'body-polishing', name: 'Body polishing', category: 'Waxing & Body Care', price: 1499, description: 'Exfoliating full-body glow therapy leaving skin deeply radiant & soft.' },
+  { id: 'body-massage', name: 'Body massage', category: 'Waxing & Body Care', price: 999, description: 'Full body restorative relaxing massage strictly for females at home.' },
 ];
 
-const ALL_SERVICES_NAMES = ALL_SERVICES_DATA.map((s) => s.name);
+export const ALL_SERVICES_NAMES = ALL_SERVICES_DATA.map((s) => s.name);
+
+export const getServicePrice = (serviceName: string): number => {
+  const match = ALL_SERVICES_DATA.find(
+    (s) => s.name.toLowerCase().trim() === serviceName.toLowerCase().trim()
+  );
+  return match?.price || 0;
+};
 
 export interface PackageItem {
   id: string;
@@ -715,13 +768,19 @@ function ServicesCatalogModal({
   onClose,
   onSelectService,
   onSelectPackage,
+  selectedServices = [],
+  selectedPackages = [],
 }: {
   isOpen: boolean;
   onClose: () => void;
   onSelectService: (serviceName: string) => void;
   onSelectPackage: (packageId: string) => void;
+  selectedServices?: string[];
+  selectedPackages?: string[];
 }) {
-  const [modalTab, setModalTab] = useState<'packages' | 'services'>('packages');
+  const [modalTab, setModalTab] = useState<'packages' | 'services'>('services');
+  const [modalCat, setModalCat] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -739,6 +798,36 @@ function ServicesCatalogModal({
 
   if (!isOpen) return null;
 
+  const modalServices = ALL_SERVICES_DATA.filter((s) => {
+    const matchesCategory =
+      modalCat === 'All' ||
+      (modalCat === 'Threading (₹25-₹60)' && s.category === 'Threading & Face Grooming') ||
+      (modalCat === 'Classic Facial (₹650)' && s.category === 'Classic Facial') ||
+      (modalCat === 'Luxury Facial (₹800)' && s.category === 'Luxury Facial') ||
+      (modalCat === 'Premium Facial (₹1250-₹1500)' && s.category === 'Premium Facial') ||
+      (modalCat === 'Clean Up (₹450)' && s.category === 'Clean Up') ||
+      (modalCat === 'Mani-Pedi' && s.category === 'Manicure & Pedicure') ||
+      (modalCat === 'Makeup & Hair' && s.category === 'Makeup & Hair') ||
+      (modalCat === 'Waxing & Body' && s.category === 'Waxing & Body Care') ||
+      s.category === modalCat;
+
+    const matchesSearch =
+      searchQuery.trim() === '' ||
+      s.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+      s.description.toLowerCase().includes(searchQuery.toLowerCase().trim());
+
+    return matchesCategory && matchesSearch;
+  });
+
+  const selectedPackagesCount = selectedPackages.length;
+  const selectedServicesCount = selectedServices.length;
+  const totalPkgsEst = LATEST_PACKAGES_DATA.filter((p) => selectedPackages.includes(p.id)).reduce(
+    (sum, p) => sum + p.price,
+    0
+  );
+  const totalSvcsEst = selectedServices.reduce((sum, name) => sum + getServicePrice(name), 0);
+  const grandTotalEst = totalPkgsEst + totalSvcsEst;
+
   return (
     <div
       onClick={(e) => {
@@ -746,18 +835,23 @@ function ServicesCatalogModal({
       }}
       className="fixed inset-0 z-[60] flex items-center justify-center p-3 md:p-6 bg-black/60 backdrop-blur-sm animate-fadeIn"
     >
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh] border border-black/15 overflow-hidden">
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[92vh] border border-black/15 overflow-hidden">
         {/* Sticky Header with PROMINENT CLOSE BUTTON */}
         <div className="flex items-center justify-between px-5 md:px-7 py-4 border-b border-black/10 bg-stone-50 shrink-0">
           <div>
-            <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500">
-              Glow Mitra Home Salon Menu
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500">
+                Glow Mitra Home Salon Menu &amp; Rate List
+              </span>
+              <span className="text-[9px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full">
+                100% Transparent Rates
+              </span>
+            </div>
             <h3 className="text-xl md:text-2xl font-bold text-black leading-tight">
-              Services & Festive Packages
+              Services Rate Card &amp; Festive Offers
             </h3>
           </div>
-          {/* Very visible and easy to click close button */}
+          {/* Close button */}
           <button
             onClick={onClose}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black text-white hover:bg-neutral-800 text-xs font-bold transition-all shadow-md cursor-pointer"
@@ -769,120 +863,291 @@ function ServicesCatalogModal({
         </div>
 
         {/* Tab switch between Festive Packages and All Services */}
-        <div className="flex items-center gap-2 px-5 md:px-7 py-3 border-b border-black/10 bg-stone-100/70 shrink-0">
-          <button
-            onClick={() => setModalTab('packages')}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-              modalTab === 'packages'
-                ? 'bg-black text-white shadow-sm'
-                : 'bg-white text-black border border-black/10 hover:bg-stone-200'
-            }`}
-          >
-            <span>🎁 Latest Packages ({LATEST_PACKAGES_DATA.length})</span>
-            <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded-full font-extrabold">Offers</span>
-          </button>
-          <button
-            onClick={() => setModalTab('services')}
-            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-              modalTab === 'services'
-                ? 'bg-black text-white shadow-sm'
-                : 'bg-white text-black border border-black/10 hover:bg-stone-200'
-            }`}
-          >
-            All 19 Services
-          </button>
+        <div className="flex items-center justify-between gap-2 px-5 md:px-7 py-3 border-b border-black/10 bg-stone-100/70 shrink-0 flex-wrap">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setModalTab('services')}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                modalTab === 'services'
+                  ? 'bg-black text-white shadow-sm'
+                  : 'bg-white text-black border border-black/10 hover:bg-stone-200'
+              }`}
+            >
+              <span>📋 Rate Card &amp; Services ({ALL_SERVICES_DATA.length})</span>
+            </button>
+            <button
+              onClick={() => setModalTab('packages')}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                modalTab === 'packages'
+                  ? 'bg-black text-white shadow-sm'
+                  : 'bg-white text-black border border-black/10 hover:bg-stone-200'
+              }`}
+            >
+              <span>🎁 Festive Packages ({LATEST_PACKAGES_DATA.length})</span>
+              <span className="text-[9px] bg-rose-500 text-white px-1.5 py-0.2 rounded-full font-extrabold">Offers</span>
+            </button>
+          </div>
+
+          <div className="text-xs text-neutral-600 font-medium">
+            Doorstep service across all over Gwalior
+          </div>
         </div>
 
+        {/* Sub-Filters and Search if in Services Tab */}
+        {modalTab === 'services' && (
+          <div className="px-5 md:px-7 py-2.5 border-b border-black/10 bg-white shrink-0 space-y-2">
+            {/* Search Input */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search services (e.g. Eyebrow, Fruit facial, Korean glass, Aroma magic, Clean up...)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-3.5 py-2 pl-9 rounded-xl border border-black/15 text-xs bg-stone-50 focus:bg-white focus:outline-none focus:border-black transition-colors"
+              />
+              <span className="absolute left-3 top-2.5 text-neutral-400 text-xs">🔍</span>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-2 text-xs font-bold text-neutral-400 hover:text-black"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Category Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+              {[
+                'All',
+                'Threading (₹25-₹60)',
+                'Classic Facial (₹650)',
+                'Luxury Facial (₹800)',
+                'Premium Facial (₹1250-₹1500)',
+                'Clean Up (₹450)',
+                'Mani-Pedi',
+                'Makeup & Hair',
+                'Waxing & Body',
+              ].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setModalCat(c)}
+                  className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer ${
+                    modalCat === c
+                      ? 'bg-black text-white shadow-xs'
+                      : 'bg-stone-100 text-neutral-700 hover:bg-stone-200'
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Scrollable list */}
-        <div className="p-5 md:p-7 overflow-y-auto space-y-3">
+        <div className="p-5 md:p-7 overflow-y-auto space-y-3 flex-1">
           {modalTab === 'packages' ? (
             <div className="space-y-3">
               <p className="text-xs text-neutral-600 mb-2">
-                Special festive packages for Navratri (₹999 &amp; ₹1299), Karwa Chauth (₹999), and Ganesh Chaturthi (10% Off). Click any package to select it and start booking!
+                Special festive packages for Navratri (₹999 &amp; ₹1299), Karwa Chauth (₹999), and Ganesh Chaturthi (10% Off). Click any package to select it!
               </p>
-              {LATEST_PACKAGES_DATA.map((pkg) => (
-                <div
-                  key={pkg.id}
-                  onClick={() => {
-                    onSelectPackage(pkg.id);
-                    onClose();
-                  }}
-                  className="p-4 rounded-xl border border-black/10 bg-stone-50 hover:bg-black hover:text-white transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 group-hover:bg-neutral-800 group-hover:text-rose-300">
-                        {pkg.offerBadge}
-                      </span>
-                      <span className="text-[11px] text-neutral-500 group-hover:text-neutral-300 line-through">
-                        ₹{pkg.originalPrice}
-                      </span>
-                      <span className="text-xs font-black text-emerald-700 group-hover:text-emerald-300">
-                        ₹{pkg.price}
-                      </span>
+              {LATEST_PACKAGES_DATA.map((pkg) => {
+                const isSelected = selectedPackages.includes(pkg.id);
+                return (
+                  <div
+                    key={pkg.id}
+                    onClick={() => onSelectPackage(pkg.id)}
+                    className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 group ${
+                      isSelected
+                        ? 'bg-black text-white border-black shadow-md ring-2 ring-black'
+                        : 'bg-stone-50 hover:bg-stone-100 border-black/10'
+                    }`}
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            isSelected
+                              ? 'bg-white/20 text-white'
+                              : 'bg-rose-100 text-rose-800'
+                          }`}
+                        >
+                          {pkg.offerBadge}
+                        </span>
+                        <span
+                          className={`text-[11px] line-through ${
+                            isSelected ? 'text-neutral-400' : 'text-neutral-500'
+                          }`}
+                        >
+                          ₹{pkg.originalPrice}
+                        </span>
+                        <span
+                          className={`text-sm font-black ${
+                            isSelected ? 'text-emerald-300' : 'text-emerald-700'
+                          }`}
+                        >
+                          ₹{pkg.price}
+                        </span>
+                      </div>
+                      <div className="text-sm font-bold capitalize mt-0.5">{pkg.name}</div>
+                      <div
+                        className={`text-[11px] mt-1 ${
+                          isSelected ? 'text-neutral-300' : 'text-neutral-600'
+                        }`}
+                      >
+                        {pkg.items.join(' • ')}
+                      </div>
                     </div>
-                    <div className="text-sm font-bold capitalize mt-0.5">{pkg.name}</div>
-                    <div className="text-[11px] text-neutral-600 group-hover:text-neutral-300 mt-1">
-                      {pkg.items.join(' • ')}
-                    </div>
+                    <button
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 self-start sm:self-center transition-colors cursor-pointer ${
+                        isSelected
+                          ? 'bg-white text-black hover:bg-stone-200'
+                          : 'bg-black text-white hover:bg-neutral-800'
+                      }`}
+                    >
+                      {isSelected ? '✓ Selected' : '+ Select Package'}
+                    </button>
                   </div>
-                  <button className="px-3.5 py-1.5 rounded-full bg-black text-white group-hover:bg-white group-hover:text-black text-xs font-bold shrink-0 self-start sm:self-center transition-colors">
-                    Book Package →
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div>
-              <p className="text-xs text-neutral-600 mb-4">
-                Click any service to select it for your in-home appointment by Chinki Hankare across all over Gwalior.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {ALL_SERVICES_DATA.map((s, idx) => (
-                  <div
-                    key={s.id}
-                    onClick={() => {
-                      onSelectService(s.name);
-                      onClose();
-                    }}
-                    className="p-3.5 rounded-xl border border-black/10 bg-stone-50 hover:bg-black hover:text-white transition-all cursor-pointer flex items-center justify-between group"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold text-neutral-500 group-hover:text-neutral-300">
-                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
-                        </span>
-                        {s.popular && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 group-hover:bg-neutral-700 group-hover:text-white font-semibold">
-                            Popular
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-sm font-bold capitalize mt-0.5">{s.name}</div>
-                      <div className="text-[11px] text-neutral-500 group-hover:text-neutral-300 line-clamp-1">
-                        {s.description}
-                      </div>
-                    </div>
-                    <span className="text-xs font-bold underline group-hover:text-white shrink-0 ml-2">
-                      Select
-                    </span>
-                  </div>
-                ))}
+              <div className="flex items-center justify-between mb-3 text-xs text-neutral-600">
+                <span>
+                  Showing {modalServices.length} service item(s) • Click to add or remove from your appointment
+                </span>
+                {selectedServicesCount > 0 && (
+                  <span className="font-bold text-black">
+                    {selectedServicesCount} selected (₹{totalSvcsEst.toLocaleString('en-IN')})
+                  </span>
+                )}
               </div>
+
+              {modalServices.length === 0 ? (
+                <div className="text-center py-10 bg-stone-50 rounded-xl text-neutral-500 text-xs">
+                  No services found matching "{searchQuery}". Try another keyword or clear filter.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {modalServices.map((s, idx) => {
+                    const isSelected = selectedServices.includes(s.name);
+                    return (
+                      <div
+                        key={s.id}
+                        onClick={() => onSelectService(s.name)}
+                        className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 group ${
+                          isSelected
+                            ? 'bg-black text-white border-black shadow-md ring-2 ring-black'
+                            : 'bg-stone-50 hover:bg-white text-black border-black/10 hover:border-black/30'
+                        }`}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`text-[10px] font-semibold ${
+                                isSelected ? 'text-neutral-400' : 'text-neutral-500'
+                              }`}
+                            >
+                              #{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                            </span>
+                            <span
+                              className={`text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider ${
+                                isSelected
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-stone-200 text-neutral-700'
+                              }`}
+                            >
+                              {s.category}
+                            </span>
+                            {s.popular && (
+                              <span
+                                className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${
+                                  isSelected
+                                    ? 'bg-amber-400/30 text-amber-200'
+                                    : 'bg-amber-100 text-amber-900'
+                                }`}
+                              >
+                                Popular
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm font-bold capitalize mt-1 truncate">
+                            {s.name}
+                          </div>
+                          <div
+                            className={`text-[11px] truncate mt-0.5 ${
+                              isSelected ? 'text-neutral-300' : 'text-neutral-500'
+                            }`}
+                          >
+                            {s.description}
+                          </div>
+                        </div>
+
+                        {/* Price & Selection Button */}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <span
+                            className={`text-sm font-black ${
+                              isSelected ? 'text-emerald-300' : 'text-emerald-700'
+                            }`}
+                          >
+                            ₹{s.price}
+                          </span>
+                          <span
+                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                              isSelected
+                                ? 'bg-white text-black'
+                                : 'bg-stone-200 text-neutral-800 group-hover:bg-black group-hover:text-white'
+                            }`}
+                          >
+                            {isSelected ? '✓ Added' : '+ Add'}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* Sticky Footer with secondary close button */}
-        <div className="px-5 py-3 border-t border-black/10 bg-stone-50 flex items-center justify-between shrink-0">
-          <span className="text-xs text-neutral-500">Only for females • Chinki Hankare</span>
-          <button
-            onClick={onClose}
-            className="px-5 py-2 rounded-full bg-neutral-200 hover:bg-neutral-300 text-black text-xs font-bold cursor-pointer transition-colors"
-          >
-            Close Window
-          </button>
+        {/* Sticky Footer with Live Subtotal & Direct Booking Button */}
+        <div className="px-5 py-3.5 border-t border-black/10 bg-stone-50 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="text-xs">
+              <span className="font-bold text-black">
+                {selectedPackagesCount} Package(s), {selectedServicesCount} Service(s)
+              </span>
+              {grandTotalEst > 0 ? (
+                <span className="text-emerald-700 font-black ml-1.5">
+                  • Total: ₹{grandTotalEst.toLocaleString('en-IN')}
+                </span>
+              ) : (
+                <span className="text-neutral-500 ml-1.5">• Click items to add</span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              onClick={onClose}
+              className="flex-1 sm:flex-none px-4 py-2 rounded-full bg-neutral-200 hover:bg-neutral-300 text-black text-xs font-bold cursor-pointer transition-colors"
+            >
+              Close
+            </button>
+            <button
+              onClick={() => {
+                onClose();
+                const el = document.getElementById('whatsapp-booking');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex-1 sm:flex-none px-5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold cursor-pointer shadow-md transition-all flex items-center justify-center gap-1.5"
+            >
+              <span>Continue to Booking Form →</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -972,12 +1237,21 @@ export default function App() {
     }
   };
 
+  const [bookingServiceCategory, setBookingServiceCategory] = useState<string>('All');
+  const [bookingServiceSearch, setBookingServiceSearch] = useState<string>('');
+
+  const chosenPkgs = LATEST_PACKAGES_DATA.filter((p) =>
+    selectedPackages.includes(p.id)
+  );
+  const totalPackagePrice = chosenPkgs.reduce((sum, p) => sum + p.price, 0);
+  const totalServicesPrice = selectedServices.reduce(
+    (sum, name) => sum + getServicePrice(name),
+    0
+  );
+  const grandTotal = totalPackagePrice + totalServicesPrice;
+
   // Generate Prewritten WhatsApp Message with Festive Packages & Services
   const generateWhatsAppMessage = () => {
-    const chosenPkgs = LATEST_PACKAGES_DATA.filter((p) =>
-      selectedPackages.includes(p.id)
-    );
-
     let packagesText = '';
     if (chosenPkgs.length > 0) {
       packagesText = chosenPkgs
@@ -992,15 +1266,20 @@ export default function App() {
 
     const servicesList =
       selectedServices.length > 0
-        ? selectedServices.map((s) => `  • ${s}`).join('\n')
+        ? selectedServices
+            .map((s) => {
+              const price = getServicePrice(s);
+              return price > 0
+                ? `  • ${s} (Just RS -- ${price.toLocaleString('en-IN')})`
+                : `  • ${s}`;
+            })
+            .join('\n')
         : '';
 
     const locationText =
       clientLocation === 'All over Gwalior'
         ? `All over Gwalior${clientAddress ? ` (${clientAddress})` : ''}`
         : `${clientLocation}${clientAddress ? ` (${clientAddress})` : ''}`;
-
-    const totalPackagePrice = chosenPkgs.reduce((sum, p) => sum + p.price, 0);
 
     return `🌸 *GLOW MITRA - LUXURY HOME SALON APPOINTMENT* 🌸\n(Exclusively for Females • Chinki Hankare)\n\n👤 *Client Name:* ${clientName || 'Not specified'}\n📱 *Contact:* ${clientPhone || 'WhatsApp Client'}\n📍 *Location:* ${locationText}\n\n${
       packagesText
@@ -1014,7 +1293,15 @@ export default function App() {
         : ''
     }${
       totalPackagePrice > 0
-        ? `💰 *Package Subtotal:* Just RS -- ${totalPackagePrice.toLocaleString('en-IN')}\n\n`
+        ? `🎁 *Package Subtotal:* Just RS -- ${totalPackagePrice.toLocaleString('en-IN')}\n`
+        : ''
+    }${
+      totalServicesPrice > 0
+        ? `💅 *Services Subtotal:* Just RS -- ${totalServicesPrice.toLocaleString('en-IN')}\n`
+        : ''
+    }${
+      grandTotal > 0
+        ? `💰 *TOTAL ESTIMATE:* Just RS -- ${grandTotal.toLocaleString('en-IN')}\n\n`
         : ''
     }📅 *Preferred Date:* ${preferredDate || 'Earliest available'}\n⏰ *Preferred Time:* ${preferredSlot}\n${
       clientNotes ? `📝 *Notes/Requirements:* ${clientNotes}\n` : ''
@@ -1048,7 +1335,43 @@ export default function App() {
   const filteredServices =
     activeCategory === 'All'
       ? ALL_SERVICES_DATA
+      : activeCategory === 'Threading (₹25-₹60)'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Threading & Face Grooming')
+      : activeCategory === 'Classic Facial (₹650)'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Classic Facial')
+      : activeCategory === 'Luxury Facial (₹800)'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Luxury Facial')
+      : activeCategory === 'Premium Facial (₹1250-₹1500)'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Premium Facial')
+      : activeCategory === 'Clean Up (₹450)'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Clean Up')
+      : activeCategory === 'Manicure & Pedicure'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Manicure & Pedicure')
+      : activeCategory === 'Makeup & Hair'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Makeup & Hair')
+      : activeCategory === 'Waxing & Body Care'
+      ? ALL_SERVICES_DATA.filter((s) => s.category === 'Waxing & Body Care')
       : ALL_SERVICES_DATA.filter((s) => s.category === activeCategory);
+
+  // Filtered services for the booking form chips
+  const filteredBookingServices = ALL_SERVICES_DATA.filter((s) => {
+    const matchesCat =
+      bookingServiceCategory === 'All' ||
+      (bookingServiceCategory === 'Threading' && s.category === 'Threading & Face Grooming') ||
+      (bookingServiceCategory === 'Facials' && s.category.includes('Facial')) ||
+      (bookingServiceCategory === 'Clean Up' && s.category === 'Clean Up') ||
+      (bookingServiceCategory === 'Mani-Pedi' && s.category === 'Manicure & Pedicure') ||
+      (bookingServiceCategory === 'Makeup & Hair' && s.category === 'Makeup & Hair') ||
+      (bookingServiceCategory === 'Waxing & Body' && s.category === 'Waxing & Body Care') ||
+      s.category === bookingServiceCategory;
+
+    const matchesSearch =
+      bookingServiceSearch.trim() === '' ||
+      s.name.toLowerCase().includes(bookingServiceSearch.toLowerCase().trim()) ||
+      s.category.toLowerCase().includes(bookingServiceSearch.toLowerCase().trim());
+
+    return matchesCat && matchesSearch;
+  });
 
   return (
     <div className="bg-white text-black min-h-screen">
@@ -1706,7 +2029,17 @@ export default function App() {
 
           {/* Category Filter Pills */}
           <div className="flex flex-wrap items-center gap-2 mb-8">
-            {['All', 'Makeup & Hair', 'Skin & Facial', 'Spa & Massage', 'Waxing & Grooming'].map((cat) => (
+            {[
+              'All',
+              'Threading (₹25-₹60)',
+              'Classic Facial (₹650)',
+              'Luxury Facial (₹800)',
+              'Premium Facial (₹1250-₹1500)',
+              'Clean Up (₹450)',
+              'Manicure & Pedicure',
+              'Makeup & Hair',
+              'Waxing & Body Care',
+            ].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
@@ -1721,7 +2054,7 @@ export default function App() {
             ))}
           </div>
 
-          {/* All 19 Services Grid */}
+          {/* All Services Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
             {filteredServices.map((svc, idx) => {
               const isSelected = selectedServices.includes(svc.name);
@@ -1755,9 +2088,19 @@ export default function App() {
                       </span>
                     </div>
 
-                    <h3 className="text-lg md:text-xl font-bold leading-snug capitalize mb-1.5">
-                      {svc.name}
-                    </h3>
+                    <div className="flex items-baseline justify-between gap-2 mb-1.5">
+                      <h3 className="text-base sm:text-lg font-bold leading-snug capitalize">
+                        {svc.name}
+                      </h3>
+                      <span
+                        className={`text-base font-black shrink-0 ${
+                          isSelected ? 'text-emerald-300' : 'text-emerald-700'
+                        }`}
+                      >
+                        ₹{svc.price}
+                      </span>
+                    </div>
+
                     <p
                       className={`text-xs leading-relaxed line-clamp-2 ${
                         isSelected ? 'text-neutral-300' : 'text-neutral-600'
@@ -1803,12 +2146,14 @@ export default function App() {
               </div>
               <div>
                 <h4 className="text-sm md:text-base font-bold text-black">
-                  {selectedServices.length} Services Selected for Home Appointment
+                  {selectedServices.length > 0
+                    ? `${selectedServices.length} Services Selected • Subtotal: ₹${totalServicesPrice.toLocaleString('en-IN')}`
+                    : 'No A-la-carte service selected yet'}
                 </h4>
                 <p className="text-xs text-neutral-600">
                   {selectedServices.length > 0
-                    ? selectedServices.slice(0, 3).join(', ') + (selectedServices.length > 3 ? ` + ${selectedServices.length - 3} more` : '')
-                    : 'Click any service card above to add it to your appointment.'}
+                    ? selectedServices.slice(0, 4).join(', ') + (selectedServices.length > 4 ? ` + ${selectedServices.length - 4} more` : '')
+                    : 'Click any service card above to select it with transparent pricing for your home visit.'}
                 </p>
               </div>
             </div>
@@ -1999,8 +2344,8 @@ export default function App() {
               </div>
 
               {/* 5. Multi-Select A-la-carte Services chips */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-black uppercase tracking-wider">
                     Add A-la-carte Services ({selectedServices.length} selected)
                   </label>
@@ -2017,26 +2362,102 @@ export default function App() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5 max-h-44 overflow-y-auto p-2.5 bg-white rounded-xl border border-black/15">
-                  {ALL_SERVICES_NAMES.map((sName) => {
-                    const active = selectedServices.includes(sName);
+
+                {/* Subcategory Filter Pills for fast selection */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                  {['All', 'Threading', 'Facials', 'Clean Up', 'Mani-Pedi', 'Makeup & Hair', 'Waxing & Body'].map((cat) => (
+                    <button
+                      type="button"
+                      key={cat}
+                      onClick={() => setBookingServiceCategory(cat)}
+                      className={`px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition-all cursor-pointer ${
+                        bookingServiceCategory === cat
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-white border border-black/10 text-neutral-700 hover:bg-stone-200'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Quick Search */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search e.g. eyebrow, fruit, raga, aroma, de-tan..."
+                    value={bookingServiceSearch}
+                    onChange={(e) => setBookingServiceSearch(e.target.value)}
+                    className="w-full px-3 py-1.5 pl-8 text-xs bg-white border border-black/15 rounded-lg focus:outline-none focus:border-black transition-colors"
+                  />
+                  <span className="absolute left-2.5 top-2 text-xs text-neutral-400">🔍</span>
+                  {bookingServiceSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setBookingServiceSearch('')}
+                      className="absolute right-2.5 top-1.5 text-xs text-neutral-400 hover:text-black font-bold"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Scrollable Chips with Exact Prices */}
+                <div className="flex flex-wrap gap-1.5 max-h-52 overflow-y-auto p-2.5 bg-white rounded-xl border border-black/15">
+                  {filteredBookingServices.map((svc) => {
+                    const active = selectedServices.includes(svc.name);
                     return (
                       <button
                         type="button"
-                        key={sName}
-                        onClick={() => toggleService(sName)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                        key={svc.id}
+                        onClick={() => toggleService(svc.name)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                           active
                             ? 'bg-black text-white shadow-xs'
-                            : 'bg-stone-100 text-neutral-700 hover:bg-stone-200'
+                            : 'bg-stone-100 text-neutral-800 hover:bg-stone-200 border border-black/5'
                         }`}
                       >
-                        {active ? '✓ ' : '+ '}
-                        {sName}
+                        <span className={active ? 'text-emerald-300 font-bold' : 'text-neutral-400'}>
+                          {active ? '✓' : '+'}
+                        </span>
+                        <span>{svc.name}</span>
+                        <span className={`text-[11px] font-extrabold ${active ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                          ₹{svc.price}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Live Cost & Bill Breakdown Summary */}
+              <div className="p-4 bg-white rounded-2xl border border-black/15 shadow-sm space-y-2.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-600 font-medium">Selected Festive Packages ({chosenPkgs.length}):</span>
+                  <span className="font-bold text-black">
+                    {totalPackagePrice > 0 ? `₹${totalPackagePrice.toLocaleString('en-IN')}` : '₹0'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-600 font-medium">Selected A-la-carte Services ({selectedServices.length}):</span>
+                  <span className="font-bold text-black">
+                    {totalServicesPrice > 0 ? `₹${totalServicesPrice.toLocaleString('en-IN')}` : '₹0'}
+                  </span>
+                </div>
+                <div className="pt-2 border-t border-black/10 flex items-baseline justify-between">
+                  <div>
+                    <span className="text-sm font-black text-black">Estimated Bill Total:</span>
+                    <span className="block text-[10px] text-neutral-500">Pay at home after your service</span>
+                  </div>
+                  <span className="text-xl font-black text-emerald-700">
+                    {grandTotal > 0 ? `₹${grandTotal.toLocaleString('en-IN')}` : '₹0 (Select items to calculate)'}
+                  </span>
+                </div>
+                {grandTotal === 0 && (
+                  <p className="text-[11px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200">
+                    💡 Please select at least one package or service above to calculate your total and prepare your booking message.
+                  </p>
+                )}
               </div>
 
               {/* 6. Date & Time Slot */}
@@ -2296,11 +2717,13 @@ export default function App() {
         isOpen={isCatalogOpen}
         onClose={() => setIsCatalogOpen(false)}
         onSelectService={(svcName) => {
-          handleSelectFromAnywhere(svcName);
+          toggleService(svcName);
         }}
         onSelectPackage={(pkgId) => {
-          handleSelectPackageAndBook(pkgId);
+          togglePackage(pkgId);
         }}
+        selectedServices={selectedServices}
+        selectedPackages={selectedPackages}
       />
     </div>
   );
