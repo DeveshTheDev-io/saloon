@@ -61,11 +61,11 @@ export const ALL_SERVICES_DATA: ServiceItem[] = [
   { id: 'gold-facial', name: 'Gold facial', category: 'Luxury Facial', price: 800, description: '24K gold dust and revitalizing botanicals for a luminous golden shine.', popular: true },
   { id: 'ozone-facial', name: 'Ozone facial', category: 'Luxury Facial', price: 800, description: 'Deep oxygenation therapy to fight pollution, acne marks & dullness.' },
 
-  // 4. Premium Facial (₹1250 - ₹1500)
-  { id: 'hydra-boost-facial', name: 'Hydra boost facial', category: 'Premium Facial', price: 1250, description: 'Deep dermal multi-layer hydration infusion for plump, dewy, intensely soft skin.', popular: true },
+  // 4. Premium Facial (₹1300 - ₹1600)
+  { id: 'hydra-boost-facial', name: 'Hydra boost facial', category: 'Premium Facial', price: 1300, description: 'Deep dermal multi-layer hydration infusion for plump, dewy, intensely soft skin.', popular: true },
   { id: 'korean-glass-facial', name: 'Korean glass facial', category: 'Premium Facial', price: 1400, description: 'Trending Korean glass-skin protocol with peptide serums for reflective porcelain glow.', popular: true },
-  { id: 'o3-shine-glow-facial', name: 'O3+ shine& glow facial', category: 'Premium Facial', price: 1299, description: 'Award-winning O3+ whitening, derma-cleanse and high-radiance formulation.' },
-  { id: 'o3-bridal-facial', name: 'O3+bridal facial', category: 'Premium Facial', price: 1500, description: 'Ultimate multi-step salon bridal glow by O3+ for long-lasting wedding radiance.', popular: true },
+  { id: 'o3-shine-glow-facial', name: 'O3+ shine& glow facial', category: 'Premium Facial', price: 1399, description: 'Award-winning O3+ whitening, derma-cleanse and high-radiance formulation.' },
+  { id: 'o3-bridal-facial', name: 'O3+bridal facial', category: 'Premium Facial', price: 1600, description: 'Ultimate multi-step salon bridal glow by O3+ for long-lasting wedding radiance.', popular: true },
   { id: 'kanpeki-glass-glow-facial', name: 'Kanpeki glass glow skin facial', category: 'Premium Facial', price: 1399, description: 'Authentic Japanese Kanpeki skincare ritual creating crystal porcelain glass texture.' },
 
   // 5. Manicure and Pedicure
@@ -110,9 +110,9 @@ export const getServicePrice = (serviceName: string): number => {
 export interface PackageItem {
   id: string;
   name: string;
-  festivalType: 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi';
+  festivalType: 'Signature Combos' | 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi';
   offerBadge: string;
-  badgeTone: 'gold' | 'rose' | 'amber';
+  badgeTone: 'gold' | 'rose' | 'amber' | 'emerald';
   price: number;
   originalPrice: number;
   savingsText: string;
@@ -122,6 +122,99 @@ export interface PackageItem {
 }
 
 export const LATEST_PACKAGES_DATA: PackageItem[] = [
+  // 1. Signature Combo - Raga Facial & Honey Wax + De-tan Pack (₹1250)
+  {
+    id: 'pkg-combo-raga-wax-1250',
+    name: 'Raaga Glow, Full Honey Wax & De-Tan Combo',
+    festivalType: 'Signature Combos',
+    offerBadge: 'Signature Home Combo',
+    badgeTone: 'emerald',
+    price: 1250,
+    originalPrice: 1799,
+    savingsText: 'Just RS 1250 • Value Combo',
+    items: [
+      'Raga facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'De-tan pack included',
+    ],
+    description: 'Complete salon glow featuring Raaga facial, full arms, legs & underarms honey waxing, eyebrow & upper lips threading, plus de-tan pack.',
+    popular: true,
+  },
+  // 2. Signature Combo - Fruit Facial & Honey Wax + Root Touch Up (₹1250)
+  {
+    id: 'pkg-combo-fruit-root-1250',
+    name: 'Fruit Facial, Full Honey Wax & Root Touch Up Combo',
+    festivalType: 'Signature Combos',
+    offerBadge: 'Signature Home Combo',
+    badgeTone: 'emerald',
+    price: 1250,
+    originalPrice: 1849,
+    savingsText: 'Just RS 1250 • Hair & Skin',
+    items: [
+      'Fruit facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'Root touch up included',
+    ],
+    description: 'Refreshing fruit facial combined with full arms, legs & underarms honey waxing, eyebrow & upper lips, and seamless root touch up.',
+    popular: true,
+  },
+  // 3. Signature Combo - De-tan Facial & Honey Wax + Keratin Mask (₹1300)
+  {
+    id: 'pkg-combo-detan-keratin-1300',
+    name: 'De-Tan Facial, Full Honey Wax & Keratin Mask Combo',
+    festivalType: 'Signature Combos',
+    offerBadge: 'Signature Home Combo',
+    badgeTone: 'emerald',
+    price: 1300,
+    originalPrice: 1999,
+    savingsText: 'Just RS 1300 • Glow & Keratin',
+    items: [
+      'De-tan facial',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+      'Keratin mask included',
+    ],
+    description: 'Tan-clearing facial paired with full arms, legs & underarms honey waxing, eyebrow & upper lips, plus nourishing keratin hair mask.',
+    popular: true,
+  },
+  // 4. Signature Combo - Korean Clean Up & Full Honey Wax (₹999)
+  {
+    id: 'pkg-combo-korean-cleanup-999',
+    name: 'Korean Clean Up & Full Honey Wax Combo',
+    festivalType: 'Signature Combos',
+    offerBadge: 'Best Value Combo',
+    badgeTone: 'emerald',
+    price: 999,
+    originalPrice: 1599,
+    savingsText: 'Just RS 999 • Best Seller',
+    items: [
+      'Korean clean up',
+      'Honey wax -- full arms, full legs, underarms',
+      'Eyebrow & upper lips',
+    ],
+    description: 'Glass-skin Korean clean up combined with full arms, full legs & underarms honey waxing and clean eyebrow & upper lips shaping.',
+    popular: true,
+  },
+  // 5. Signature Combo - Hydra Clean Up & Half Legs Honey Wax (₹999)
+  {
+    id: 'pkg-combo-hydra-cleanup-999',
+    name: 'Hydra Clean Up & Honey Wax Combo',
+    festivalType: 'Signature Combos',
+    offerBadge: 'Best Value Combo',
+    badgeTone: 'emerald',
+    price: 999,
+    originalPrice: 1499,
+    savingsText: 'Just RS 999 • Hydra Deal',
+    items: [
+      'Hydra clean up',
+      'Honey wax -- full arms, half legs, underarms',
+      'Eyebrow & upper lips',
+    ],
+    description: 'Deeply hydrating Hydra clean up paired with smooth honey wax on full arms, half legs & underarms, plus eyebrow & upper lips.',
+    popular: true,
+  },
   // 1. Navratri Special Offer - Raaga Facial & Rica Wax (₹999)
   {
     id: 'pkg-navratri-raga-999',
@@ -804,7 +897,7 @@ function ServicesCatalogModal({
       (modalCat === 'Threading (₹25-₹60)' && s.category === 'Threading & Face Grooming') ||
       (modalCat === 'Classic Facial (₹650)' && s.category === 'Classic Facial') ||
       (modalCat === 'Luxury Facial (₹800)' && s.category === 'Luxury Facial') ||
-      (modalCat === 'Premium Facial (₹1250-₹1500)' && s.category === 'Premium Facial') ||
+      (modalCat === 'Premium Facial (₹1300-₹1600)' && s.category === 'Premium Facial') ||
       (modalCat === 'Clean Up (₹450)' && s.category === 'Clean Up') ||
       (modalCat === 'Mani-Pedi' && s.category === 'Manicure & Pedicure') ||
       (modalCat === 'Makeup & Hair' && s.category === 'Makeup & Hair') ||
@@ -923,7 +1016,7 @@ function ServicesCatalogModal({
                 'Threading (₹25-₹60)',
                 'Classic Facial (₹650)',
                 'Luxury Facial (₹800)',
-                'Premium Facial (₹1250-₹1500)',
+                'Premium Facial (₹1300-₹1600)',
                 'Clean Up (₹450)',
                 'Mani-Pedi',
                 'Makeup & Hair',
@@ -950,7 +1043,7 @@ function ServicesCatalogModal({
           {modalTab === 'packages' ? (
             <div className="space-y-3">
               <p className="text-xs text-neutral-600 mb-2">
-                Special festive packages for Navratri (₹999 &amp; ₹1299), Karwa Chauth (₹999), and Ganesh Chaturthi (10% Off). Click any package to select it!
+                Signature Home Combos (₹999, ₹1250 &amp; ₹1300) plus Festive Specials for Navratri, Karwa Chauth &amp; Ganesh Chaturthi. Click any package to select it!
               </p>
               {LATEST_PACKAGES_DATA.map((pkg) => {
                 const isSelected = selectedPackages.includes(pkg.id);
@@ -1164,7 +1257,7 @@ export default function App() {
 
   // Selected latest packages state (empty by default - customer adds by themselves)
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
-  const [activePackageFilter, setActivePackageFilter] = useState<'All' | 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi'>('All');
+  const [activePackageFilter, setActivePackageFilter] = useState<'All' | 'Signature Combos' | 'Navratri' | 'Karwa Chauth' | 'Ganesh Chaturthi'>('All');
 
   // WhatsApp interactive booking state (empty by default - customer adds by themselves)
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -1341,7 +1434,7 @@ export default function App() {
       ? ALL_SERVICES_DATA.filter((s) => s.category === 'Classic Facial')
       : activeCategory === 'Luxury Facial (₹800)'
       ? ALL_SERVICES_DATA.filter((s) => s.category === 'Luxury Facial')
-      : activeCategory === 'Premium Facial (₹1250-₹1500)'
+      : activeCategory === 'Premium Facial (₹1300-₹1600)'
       ? ALL_SERVICES_DATA.filter((s) => s.category === 'Premium Facial')
       : activeCategory === 'Clean Up (₹450)'
       ? ALL_SERVICES_DATA.filter((s) => s.category === 'Clean Up')
@@ -1824,7 +1917,7 @@ export default function App() {
                 Festive Home Combos
               </h2>
               <p className="text-neutral-700 text-sm md:text-base mt-2 font-medium">
-                Navratri Specials (₹999 &amp; ₹1299), Karwa Chauth ₹999 Combos &amp; Ganesh Chaturthi 10% Off Home Service Packages in Gwalior
+                Signature Home Combos (₹999, ₹1250 &amp; ₹1300), Navratri Specials, Karwa Chauth Combos &amp; Ganesh Chaturthi 10% Off Packages in Gwalior
               </p>
             </div>
             <div className="max-w-md bg-white/90 backdrop-blur-sm p-4 md:p-5 rounded-2xl border border-black/10 shadow-xs">
@@ -1836,7 +1929,7 @@ export default function App() {
 
           {/* Filter Pills */}
           <div className="flex flex-wrap items-center gap-2 mb-8">
-            {(['All', 'Navratri', 'Karwa Chauth', 'Ganesh Chaturthi'] as const).map((cat) => (
+            {(['All', 'Signature Combos', 'Navratri', 'Karwa Chauth', 'Ganesh Chaturthi'] as const).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActivePackageFilter(cat)}
@@ -1846,7 +1939,18 @@ export default function App() {
                     : 'bg-white border border-black/15 text-black hover:bg-neutral-100'
                 }`}
               >
-                <span>{cat === 'All' ? `All Packages (${LATEST_PACKAGES_DATA.length})` : `${cat} Offers`}</span>
+                <span>
+                  {cat === 'All'
+                    ? `All Packages (${LATEST_PACKAGES_DATA.length})`
+                    : cat === 'Signature Combos'
+                    ? 'Signature Combos'
+                    : `${cat} Offers`}
+                </span>
+                {cat === 'Signature Combos' && (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-900 font-extrabold">
+                    ₹999 - ₹1300
+                  </span>
+                )}
                 {cat === 'Navratri' && (
                   <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-orange-100 text-orange-900 font-extrabold">
                     ₹999 / ₹1299
@@ -1870,9 +1974,12 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {filteredPackages.map((pkg) => {
               const isSelected = selectedPackages.includes(pkg.id);
+              const isSignature = pkg.festivalType === 'Signature Combos';
               const isNavratri = pkg.festivalType === 'Navratri';
               const isGanesh = pkg.festivalType === 'Ganesh Chaturthi';
-              const badgeGradient = isNavratri
+              const badgeGradient = isSignature
+                ? 'bg-gradient-to-r from-emerald-700 via-teal-600 to-emerald-600 text-white'
+                : isNavratri
                 ? 'bg-gradient-to-r from-orange-600 via-amber-600 to-yellow-600 text-white'
                 : isGanesh
                 ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white'
@@ -2034,7 +2141,7 @@ export default function App() {
               'Threading (₹25-₹60)',
               'Classic Facial (₹650)',
               'Luxury Facial (₹800)',
-              'Premium Facial (₹1250-₹1500)',
+              'Premium Facial (₹1300-₹1600)',
               'Clean Up (₹450)',
               'Manicure & Pedicure',
               'Makeup & Hair',
@@ -2269,7 +2376,7 @@ export default function App() {
                   </label>
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-bold text-amber-800">
-                      Navratri (₹999 / ₹1299) • Karwa Chauth (₹999) • Ganesh (10% Off)
+                      Combos (₹999 - ₹1300) • Navratri • Karwa Chauth • Ganesh
                     </span>
                     {selectedPackages.length > 0 && (
                       <button
